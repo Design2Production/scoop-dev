@@ -1,0 +1,13 @@
+{
+    "version": "0.3.2",
+    "url": "https://design2production.github.io/scoop-dev/windows/serman/serman_0.3.2.zip",
+    "extract_dir": "",
+    "bin": "serman.exe",
+    "checkver": {
+        "url": "https://design2production.github.io/scoop-dev/serman-versions.json",
+        "jp": "$.versions[?(@.displayName == 'serman - Latest')].version"
+    },
+    "autoupdate": {
+        "url": "https://design2production.github.io/scoop-dev/windows/serman/serman_$version.zip"
+    }
+}
