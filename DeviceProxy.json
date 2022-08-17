@@ -4,8 +4,8 @@
     "extract_dir": "DeviceProxy",
     "bin": "DeviceProxy.exe",
     "checkver": {
-        "url": "https://design2production.github.io/scoop-dev/windows/dpems/index.html",
-        "regex": "DeviceProxy_([\\d.]+)\\.zip"
+        "url": "https://design2production.github.io/scoop-dev/scoop-versions.json",
+        "jp": "$.versions[?(@.displayName == 'DeviceProxy')].version"
     },
     "autoupdate": {
         "url": "https://dl.google.com/go/DeviceProxy_$version.zip"
