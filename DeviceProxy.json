@@ -5,7 +5,7 @@
     "bin": "DeviceProxy.exe",
     "checkver": {
         "url": "https://design2production.github.io/scoop-dev/scoop-versions.json",
-        "jp": "$.versions[?(@.displayName == 'DeviceProxy')].version"
+        "jp": "$.versions[?(@.displayName == 'DeviceProxy - Latest')].version"
     },
     "autoupdate": {
         "url": "https://dl.google.com/go/DeviceProxy_$version.zip"
