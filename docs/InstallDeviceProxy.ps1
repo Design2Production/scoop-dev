@@ -1,4 +1,4 @@
-if ( $psversiontable.psversion.major -lt 6 )
+if ( $psversiontable.psversion.major -lt 3 )
 {
     Write-Output "Powershell needs to be version 3 or greater"
     exit
