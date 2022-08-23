@@ -37,7 +37,7 @@ Switch ($hardware)
         exit
     }
 }
-$environment = $server + $hardware
+$environment = $server + "_" + $hardware
 
 if (!$installation)
 {
@@ -65,13 +65,8 @@ catch
 scoop update
 
 $installedApps = $(scoop list)
-#$sudoInstalled = $($installedApps | Select-String -Pattern 'sudo' -CaseSensitive -SimpleMatch)
 $sermanInstalled = $($installedApps | Select-String -Pattern 'serman' -CaseSensitive -SimpleMatch)
 $deviceProxyInstalled = $($installedApps | Select-String -Pattern 'DeviceProxy' -CaseSensitive -SimpleMatch)
-#if (!$sudoInstalled)
-#{
-    #scoop install sudo
-#}
 if (!$sermanInstalled)
 {
     scoop install serman
@@ -81,21 +76,22 @@ if (!$deviceProxyInstalled)
     scoop install DeviceProxy
 }
 
+#create data folders
 New-Item -ItemType Directory -Force -Path C:\ProgramData\DP\DeviceProxy\cache\firmware | Out-Null
 New-Item -ItemType Directory -Force -Path C:\ProgramData\DP\DeviceProxy\data | Out-Null
 New-Item -ItemType Directory -Force -Path C:\ProgramData\DP\DeviceProxy\log | Out-Null
 
-$scoopDirectory = $(scoop prefix DeviceProxy)
+$deviceProxyDirectory = $(scoop prefix DeviceProxy)
 
 if ($installation -eq "new")
 {
     #copy settings files from applicaiton and open for editing
-    Copy-Item "$scoopDirectory\setting.json" -Destination "C:\ProgramData\DP\DeviceProxy\setting.json"
+    Copy-Item "$deviceProxyDirectory\setting.json" -Destination "C:\ProgramData\DP\DeviceProxy\setting.json"
     Write-Output "Editing setting.json in Notepad - Save file and exit Notepad to continue..."
     notepad.exe C:\ProgramData\DP\DeviceProxy\setting.json | Out-Null
     Write-Output "setting.json saved"
     Write-Output "Editing data.json in Notepad - Save file and exit Notepad to continue..."
-    Copy-Item "$scoopDirectory\data.json" -Destination "C:\ProgramData\DP\DeviceProxy\data\data.json"
+    Copy-Item "$deviceProxyDirectory\data.json" -Destination "C:\ProgramData\DP\DeviceProxy\data\data.json"
     notepad.exe C:\ProgramData\DP\DeviceProxy\data\data.json | Out-Null
     Write-Output "data.json saved"
 }
@@ -107,17 +103,16 @@ else
 }
 
 # Add auto update to scheduler
-$scoopUpdateXml = $scoopDirectory + "\Scoop.Update.Apps.xml"
-$taskName = "Scoop.Update.Apps"
+$dpUpdateAppsXml = $deviceProxyDirectory + "\DPUpdateApps.xml"
+$taskName = "DPUpdateApps"
 $taskExists = Get-ScheduledTask | Where-Object {$_.TaskName -like $taskName }
-
 if ($taskExists)
 {
-    Unregister-ScheduledTask -TaskName "Scoop.Update.Apps" -Confirm:$false
+    Unregister-ScheduledTask -TaskName "DPUpdateApps" -Confirm:$false
 }
-Register-ScheduledTask -xml (Get-Content $scoopUpdateXml | Out-String) -TaskName "Scoop.Update.Apps" -TaskPath "\DP\"
+Register-ScheduledTask -xml (Get-Content $dpUpdateAppsXml | Out-String) -TaskName "DPUpdateApps" -TaskPath "\DP\"
 
-$deviceProxyXml = $scoopDirectory + "\DeviceProxy.xml"
 # Add DeviceProxy as Windows Service
+$deviceProxyXml = $deviceProxyDirectory + "\DeviceProxy.xml"
 serman uninstall DeviceProxy
-serman install $deviceProxyXml ASP_ENV=$environment --overwrite
+serman install $deviceProxyXml ASP_ENV=$environment --overwriteser
