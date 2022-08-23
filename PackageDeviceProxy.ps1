@@ -8,7 +8,7 @@ if ( [string]::IsNullOrEmpty($version) -eq "True" )
 
 Write-Output "Packaging DeviceProxy_$($version)..."
 
-#Compress-Archive -Path ..\WindowsBuilds\DeviceProxy -DestinationPath docs\windows\dpems\DeviceProxy_$version.zip
+Compress-Archive -Path ..\WindowsBuilds\DeviceProxy -DestinationPath docs\windows\dpems\DeviceProxy_$version.zip
 
 $fileHash = (Get-FileHash -Path .\docs\windows\dpems\DeviceProxy_$version.zip).hash
 
