@@ -146,8 +146,8 @@ try
     Write-Output "Uninstall serman..."
     serman uninstall DeviceProxy | out-null
     Write-Output "Remove serman cache..."
-    Remove-Item C:\serman\* -Recurse -Force
-    Remove-Item C:\serman\
+    Remove-Item C:\serman\* -Recurse -Force | out-null
+    Remove-Item C:\serman\ | out-null
 }
 catch{}
 Write-Output "Install DeviceProxy service"
