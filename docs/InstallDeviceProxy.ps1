@@ -71,13 +71,19 @@ catch
 
     iex "& {$(irm get.scoop.sh)} -RunAsAdmin"
     #Invoke-Expression (New-Object System.Net.WebClient).DownloadString('https://get.scoop.sh')
-
-    scoop bucket add scoop-dev https://github.com/Design2Production/scoop-dev.git
 }
 
 scoop update
 
 $installedApps = $(scoop list)
+$gitInstalled = $($installedApps | Select-String -Pattern 'git' -CaseSensitive -SimpleMatch)
+if (!$gitInstalled)
+{
+    scoop install git
+}
+
+scoop bucket add scoop-dev https://github.com/Design2Production/scoop-dev.git
+
 $sermanInstalled = $($installedApps | Select-String -Pattern 'serman' -CaseSensitive -SimpleMatch)
 $deviceProxyInstalled = $($installedApps | Select-String -Pattern 'DeviceProxy' -CaseSensitive -SimpleMatch)
 if (!$sermanInstalled)
