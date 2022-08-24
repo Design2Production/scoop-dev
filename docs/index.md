@@ -27,9 +27,9 @@ set-executionpolicy remotesigned -scope currentuser
 </pre>
 
 3. Run the install script with the following arguments
-    1. Server: **Production** | **Staging**
-    2. Hardware: **DPEMS-V1** | **DPEMS-V1_DBV2** | **DPEMS-V1_DBV3** | **DPEMS-V1_FANEXT** | **DPEMS-V2**
-    3. Installation: **new** | **fullPathOfOldDeviceProxy.exeFolder**
+    1. <pre>Server: Production | Staging</pre>
+    2. <pre>Hardware: DPEMS-V1 | DPEMS-V1_DBV2 | DPEMS-V1_DBV3 | DPEMS-V1_FANEXT | DPEMS-V2</pre>
+    3. <pre>Installation: new | <i>fullPathOfOldDeviceProxyFolder</i></pre>
 <pre>
 .\InstallDeviceProxy.ps1 Staging DPEMS-V2 new
 .\InstallDeviceProxy.ps1 Production DPEMS-V2 C:\ProgramFiles\DP\DeviceProxy
