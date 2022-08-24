@@ -7,9 +7,17 @@
     3. Right-Click on **Windows Powershell*** and select **"Run As Administrator"**
     4. Click on **Yes** when asked for permission
 
-2. If Updating an existing machine, remove the old start batch file and scheduled task
+2. If Updating an existing machine remove the old start batch file
 <pre>
 rm <b>pathToDesktop</b>/start.cmd
+</pre>
+So for SureVision, this will be 
+<pre>
+rm C:\Users\SureVision\Desktop\start.cmd
+</pre>
+
+3. If Update an existing machine, remove the old run task
+<pre>
 Unregister-ScheduledTask -TaskName "RunNetworkProxy" -Confirm:$false
 </pre>
 If your previous installation had a different task name created, you can also open <b>Task Scheduler</b> to ensure the start up task has been removed
