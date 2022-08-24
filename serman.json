@@ -3,7 +3,7 @@
   "url": "https://design2production.github.io/scoop-dev/windows/serman/serman_1.0.0.zip",
   "extract_dir": "",
   "bin": "serman.exe",
-  "hash": "06C07F632AA85FE9AC7E004AB0929C9955657DBBB0D09FAAA30B522666ACB715",
+  "hash": "02B9E67102F4BD6DD7E100ED62B4276A066945138ABA58BAB730CF89A3C93B7B",
   "checkver": {
     "url": "https://design2production.github.io/scoop-dev/serman-versions.json",
     "jp": "$.versions[?(@.displayName == 'serman - Latest')].version"
