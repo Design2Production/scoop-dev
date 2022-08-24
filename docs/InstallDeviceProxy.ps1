@@ -45,6 +45,19 @@ if (!$installation)
     exit
 }
 
+$settingFile = "$installation\conf\setting.json"
+$dataFile = "$installation\data\data.json"
+if ($(Test-Path -Path $settingFile) -ne $true)
+{
+    Write-Output "setting.json does not exist in old Installation folder $settingFile"
+    exit
+}
+if ($(Test-Path -Path $dataFile) -ne $true)
+{
+    Write-Output "data.json does not exist in old Installation folder $installation\..\data\data.json"
+    exit
+}
+
 $env:SCOOP='C:\scoop'
 [environment]::setEnvironmentVariable('SCOOP',$env:SCOOP,'User')
 
@@ -77,12 +90,13 @@ if (!$deviceProxyInstalled)
 }
 
 #create data folders
+Write-Output "Create ProgramData directories..."
 New-Item -ItemType Directory -Force -Path C:\ProgramData\DP\DeviceProxy\cache\firmware | Out-Null
 New-Item -ItemType Directory -Force -Path C:\ProgramData\DP\DeviceProxy\data | Out-Null
 New-Item -ItemType Directory -Force -Path C:\ProgramData\DP\DeviceProxy\log | Out-Null
 
+Write-Output "Copy data files..."
 $deviceProxyDirectory = $(scoop prefix DeviceProxy)
-
 if ($installation -eq "new")
 {
     #copy settings files from applicaiton and open for editing
@@ -98,11 +112,12 @@ if ($installation -eq "new")
 else
 {
     #copy settings files from old installation
-    Copy-Item "$installation\..\conf\setting.json" -Destination "C:\ProgramData\DP\DeviceProxy\setting.json"
-    Copy-Item "$installation\..\data\data.json" -Destination "C:\ProgramData\DP\DeviceProxy\data\data.json"
+    Copy-Item $settingFile -Destination "C:\ProgramData\DP\DeviceProxy\setting.json"
+    Copy-Item $dataFile -Destination "C:\ProgramData\DP\DeviceProxy\data\data.json"
 }
 
 # Add auto update to scheduler
+Write-Output "Add task for Autoupdate..."
 $dpUpdateAppsXml = $deviceProxyDirectory + "\DPUpdateApps.xml"
 $taskName = "DPUpdateApps"
 $taskExists = Get-ScheduledTask | Where-Object {$_.TaskName -like $taskName }
@@ -110,9 +125,25 @@ if ($taskExists)
 {
     Unregister-ScheduledTask -TaskName "DPUpdateApps" -Confirm:$false
 }
-Register-ScheduledTask -xml (Get-Content $dpUpdateAppsXml | Out-String) -TaskName "DPUpdateApps" -TaskPath "\DP\"
+Register-ScheduledTask -xml (Get-Content $dpUpdateAppsXml | Out-String) -TaskName "DPUpdateApps" -TaskPath "\DP\" | out-null
 
 # Add DeviceProxy as Windows Service
 $deviceProxyXml = $deviceProxyDirectory + "\DeviceProxy.xml"
-serman uninstall DeviceProxy
-serman install $deviceProxyXml ASP_ENV=$environment --overwriteser
+try
+{
+    Write-Output "Stop DeviceProxy Service..."
+    Stop-Service DeviceProxy | out-null
+}
+catch {}
+try
+{
+    Write-Output "Uninstall serman..."
+    serman uninstall DeviceProxy | out-null
+    Write-Output "Remove serman cache..."
+    Remove-Item C:\serman\* -Recurse -Force
+    Remove-Item C:\serman\
+}
+catch{}
+Write-Output "Install DeviceProxy service"
+serman install $deviceProxyXml ASP_ENV=$environment --overwrite
+Write-Output "DeviceProxy installation complete"
