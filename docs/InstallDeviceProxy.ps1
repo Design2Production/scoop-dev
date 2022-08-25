@@ -97,9 +97,9 @@ if (!$deviceProxyInstalled)
 
 #create data folders
 Write-Output "Create ProgramData directories..."
-New-Item -ItemType Directory -Force -Path C:\ProgramData\DP\DeviceProxy\cache\firmware 2>$null
-New-Item -ItemType Directory -Force -Path C:\ProgramData\DP\DeviceProxy\data 2>$null
-New-Item -ItemType Directory -Force -Path C:\ProgramData\DP\DeviceProxy\log 2>$null
+New-Item -ItemType Directory -Force -Path C:\ProgramData\DP\DeviceProxy\cache\firmware | out-null
+New-Item -ItemType Directory -Force -Path C:\ProgramData\DP\DeviceProxy\data | out-null
+New-Item -ItemType Directory -Force -Path C:\ProgramData\DP\DeviceProxy\log | out-null
 
 Write-Output "Copy data files..."
 $deviceProxyDirectory = $(scoop prefix DeviceProxy)
