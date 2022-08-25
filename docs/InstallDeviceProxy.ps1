@@ -1,3 +1,4 @@
+#Requires -RunAsAdministrator
 Set-PSDebug -Trace 0
 
 Write-Output "Downloading and installing DeviceProxy"
