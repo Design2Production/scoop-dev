@@ -97,9 +97,9 @@ if (!$deviceProxyInstalled)
 
 #create data folders
 Write-Output "Create ProgramData directories..."
-New-Item -ItemType Directory -Force -Path C:\ProgramData\DP\DeviceProxy\cache\firmware | Out-Null
-New-Item -ItemType Directory -Force -Path C:\ProgramData\DP\DeviceProxy\data | Out-Null
-New-Item -ItemType Directory -Force -Path C:\ProgramData\DP\DeviceProxy\log | Out-Null
+New-Item -ItemType Directory -Force -Path C:\ProgramData\DP\DeviceProxy\cache\firmware 2>$null
+New-Item -ItemType Directory -Force -Path C:\ProgramData\DP\DeviceProxy\data 2>$null
+New-Item -ItemType Directory -Force -Path C:\ProgramData\DP\DeviceProxy\log 2>$null
 
 Write-Output "Copy data files..."
 $deviceProxyDirectory = $(scoop prefix DeviceProxy)
@@ -108,11 +108,11 @@ if ($installation -eq "new")
     #copy settings files from applicaiton and open for editing
     Copy-Item "$deviceProxyDirectory\setting.json" -Destination "C:\ProgramData\DP\DeviceProxy\setting.json"
     Write-Output "Editing setting.json in Notepad - Save file and exit Notepad to continue..."
-    notepad.exe C:\ProgramData\DP\DeviceProxy\setting.json | Out-Null
+    notepad.exe C:\ProgramData\DP\DeviceProxy\setting.json | out-null
     Write-Output "setting.json saved"
     Write-Output "Editing data.json in Notepad - Save file and exit Notepad to continue..."
     Copy-Item "$deviceProxyDirectory\data.json" -Destination "C:\ProgramData\DP\DeviceProxy\data\data.json"
-    notepad.exe C:\ProgramData\DP\DeviceProxy\data\data.json | Out-Null
+    notepad.exe C:\ProgramData\DP\DeviceProxy\data\data.json | out-null
     Write-Output "data.json saved"
 }
 else
@@ -129,27 +129,23 @@ $taskName = "DPUpdateApps"
 $taskExists = Get-ScheduledTask | Where-Object {$_.TaskName -like $taskName }
 if ($taskExists)
 {
-    Unregister-ScheduledTask -TaskName "DPUpdateApps" -Confirm:$false
+    Unregister-ScheduledTask -TaskName "DPUpdateApps" -Confirm:$false 2>$null
 }
 Register-ScheduledTask -xml (Get-Content $dpUpdateAppsXml | Out-String) -TaskName "DPUpdateApps" -TaskPath "\DP\" | out-null
 
 # Add DeviceProxy as Windows Service
 $deviceProxyXml = $deviceProxyDirectory + "\DeviceProxy.xml"
-try
-{
-    Write-Output "Stop DeviceProxy Service..."
-    Stop-Service DeviceProxy | out-null
-}
-catch {}
-try
-{
-    Write-Output "Uninstall serman..."
-    serman uninstall DeviceProxy | out-null
-    Write-Output "Remove serman cache..."
-    Remove-Item C:\serman\* -Recurse -Force | out-null
-    Remove-Item C:\serman\ | out-null
-}
-catch{}
+Write-Output "Stop DeviceProxy Service..."
+Stop-Service DeviceProxy 2>$null
+
+Write-Output "Uninstall serman..."
+serman uninstall DeviceProxy 2>$null | out-null
+
+Write-Output "Remove serman cache..."
+Remove-Item C:\serman\* -Recurse -Force 2>$null
+Remove-Item C:\serman\ 2>$null
+
 Write-Output "Install DeviceProxy service"
 serman install $deviceProxyXml ASP_ENV=$environment --overwrite
+
 Write-Output "DeviceProxy installation complete"
