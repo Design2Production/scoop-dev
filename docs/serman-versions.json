@@ -2,6 +2,13 @@
   "versions": [
     {
       "displayName": "serman - Latest",
+      "version": "1.0.1",
+      "url": "https://design2production.github.io/scoop-dev/windows/serman/serman_1.0.1.zip",
+      "hash": "5B87654DBB282E5B86857E64C3F3A7ED77DA5A09E91B2D282E10B468220F8BD2",
+      "releasedate": "2022-08-24T11:00:00.000Z"
+    },
+    {
+      "displayName": "serman",
       "version": "1.0.0",
       "url": "https://design2production.github.io/scoop-dev/windows/serman/serman_1.0.0.zip",
       "hash": "02B9E67102F4BD6DD7E100ED62B4276A066945138ABA58BAB730CF89A3C93B7B",
