@@ -1,0 +1,14 @@
+{
+    "version": "1.0.0.0",
+    "url": "https://design2production.github.io/scoop-dev/windows/dpems/RemoteCommandRunner_1.0.0.0.zip",
+    "extract_dir": "RemoteCommandRunner",
+    "bin": "RemoteCommandRunner.exe",
+    "hash": "2DD3EB6B854CCAD8CFF22BC260DD303C355B6ED2EBF860E027433E5A60D4C50F",
+    "checkver": {
+        "url": "https://design2production.github.io/scoop-dev/RemoteCommandRunnerVersions.json",
+        "jp": "$.versions[?(@.displayName == 'RemoteCommandRunner - Latest')].version"
+    },
+    "autoupdate": {
+        "url": "https://design2production.github.io/scoop-dev/windows/dpems/RemoteCommandRunner_$version.zip"
+    }
+}

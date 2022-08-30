@@ -1,0 +1,11 @@
+{
+    "versions": [
+        {
+            "displayName": "RemoteCommandRunner - Latest",
+            "version": "1.0.0.0",
+            "url": "https://design2production.github.io/scoop-dev/windows/dpems/RemoteCommandRunner_1.0.0.0.zip",
+            "hash": "2DD3EB6B854CCAD8CFF22BC260DD303C355B6ED2EBF860E027433E5A60D4C50F",
+            "releasedate": "2022-08-30T12:14:22:333Z"
+        },
+    ]
+}
