@@ -1,74 +1,12 @@
 #Requires -RunAsAdministrator
 Set-PSDebug -Trace 0
 
-Write-Output 'Downloading and installing DeviceProxy'
+Write-Output 'Downloading and installing RemoteCommandRunner'
 
 if ( $psversiontable.psversion.major -lt 3 )
 {
     Write-Output 'Powershell needs to be version 3 or greater'
     exit 1
-}
-
-$server = $args[0]
-$hardware = $args[1]
-$installation = $args[2]
-$installationType = $args[3]
-
-Switch ($server)
-{
-    'Staging' {}
-    'Production' {}
-    default
-    {
-        Write-Output 'server needs to be specified Production | Staging'
-        exit 1
-    }
-}
-$server = 'Windows' + $server
-
-Switch ($hardware)
-{
-    'DPEMS-V1' {}
-    'DPEMS-V1_DBV2' {}
-    'DPEMS-V1_DBV3' {}
-    'DPEMS-V1_FANEXT' {}
-    'DPEMS-V2' {}
-    default
-    {
-        Write-Output 'hardware needs to be specified DPEMS-V1 | DPEMS-V1_DBV2 | DPEMS-V1_DBV3 | DPEMS-V1_FANEXT | DPEMS-V2'
-        exit 1
-    }
-}
-$environment = $server + '_' + $hardware
-
-if (!$installation)
-{
-    Write-Output 'Installation must be specified new | old_installation_folder'
-    exit
-}
-
-Switch ($installationType)
-{
-    'singlePC' {}
-    'dualPC' {}
-    default
-    {
-        Write-Output 'Installation Type must be specified singlePC | dualPC'
-        exit 1
-    }
-}
-
-$settingFile = "$installation\conf\setting.json"
-$dataFile = "$installation\data\data.json"
-if ($(Test-Path -Path $settingFile) -ne $true)
-{
-    Write-Output "setting.json does not exist in old Installation folder $settingFile"
-    exit
-}
-if ($(Test-Path -Path $dataFile) -ne $true)
-{
-    Write-Output "data.json does not exist in old Installation folder $installation\..\data\data.json"
-    exit
 }
 
 # Open the firewall for pings
@@ -101,147 +39,144 @@ else
     }
 }
 
-# Set up the IP Address for the secondard Ethernet port for a Dual PC setup
-if ($installationType -eq 'dualPC')
+# Set up the IP Address for the secondard Ethernet port for the Dual PC setup
+$newIPAddress = '192.168.64.2'
+$newSubnetMask = '255.255.255.0'
+$physicalAdapters = Get-NetAdapter -Physical | Where-Object { $_.PhysicalMediaType -eq '802.3' }
+$manualAdapter = $null
+$dhcpAdapter = $null
+$wellknownAdapter = $null
+foreach ($physicalAdapter in $physicalAdapters)
 {
-    $newIPAddress = '192.168.64.1'
-    $newSubnetMask = '255.255.255.0'
-    $physicalAdapters = Get-NetAdapter -Physical | Where-Object { $_.PhysicalMediaType -eq '802.3' }
-    $manualAdapter = $null
-    $dhcpAdapter = $null
-    $wellknownAdapter = $null
-    foreach ($physicalAdapter in $physicalAdapters)
+    $configurations = Get-NetIPAddress -InterfaceIndex $physicalAdapter.InterfaceIndex -AddressFamily IPv4
+    foreach ($configuration in $configurations)
     {
-        $configurations = Get-NetIPAddress -InterfaceIndex $physicalAdapter.InterfaceIndex -AddressFamily IPv4
-        foreach ($configuration in $configurations)
+        Write-Output "Detected $($configuration.InterfaceAlias) $($configuration.PrefixOrigin) $($configuration.IPAddress) $($configuration.AddressState)"
+        switch ($configuration.AddressState)
         {
-            Write-Output "Detected $($configuration.InterfaceAlias) $($configuration.PrefixOrigin) $($configuration.IPAddress) $($configuration.AddressState)"
-            switch ($configuration.AddressState)
+            'Invalid'
             {
-                'Invalid'
-                {
-                    Write-Output "Warning - Invalid IP Address has been detected on $($configuration.InterfaceAlias) - PLEASE CONFIGURE THE SECONDARY IP ADDRESSES MANUALLY"
-                    exit 1
-                }
-                'Tentative'
-                {
-                    Write-Output "Warning - Tentative IP Address has been detected on $($configuration.InterfaceAlias) - PLEASE CONFIGURE THE SECONDARY IP ADDRESSES MANUALLY"
-                    exit 1
-                }
-                'Duplicate'
-                {
-                    Write-Output "Warning - Duplicate IP Addresses have been detected on $($configuration.InterfaceAlias) - PLEASE CONFIGURE THE SECONDARY IP ADDRESSES MANUALLY"
-                    exit 1
-                }
-                'Deprecated'
-                {
-                    continue
-                }
-                'Preferred'
-                {
-                    Out-Null
-                }
+                Write-Output "Warning - Invalid IP Address has been detected on $($configuration.InterfaceAlias) - PLEASE CONFIGURE THE SECONDARY IP ADDRESSES MANUALLY"
+                exit 1
             }
-            if ($configuration.PrefixOrigin -eq 'Manual')
+            'Tentative'
             {
-                if ($null -eq $manualAdapter)
-                {
-                    $manualAdapter = $configuration
-                }
-                else
-                {
-                    Write-Output 'Both adapters are set to Manual - you will need to conifgure the network adapters manually'
-                    exit 1
-                }
+                Write-Output "Warning - Tentative IP Address has been detected on $($configuration.InterfaceAlias) - PLEASE CONFIGURE THE SECONDARY IP ADDRESSES MANUALLY"
+                exit 1
             }
-            elseif ($configuration.PrefixOrigin -eq 'Wellknown')
+            'Duplicate'
             {
-                if ($null -eq $wellknownAdapter)
-                {
-                    $wellknownAdapter = $configuration
-                }
-                else
-                {
-                    Write-Output 'Both adapters are set to Wellknown - you will need to conifgure the network adapters manually'
-                    exit 1
-                }
+                Write-Output "Warning - Duplicate IP Addresses have been detected on $($configuration.InterfaceAlias) - PLEASE CONFIGURE THE SECONDARY IP ADDRESSES MANUALLY"
+                exit 1
             }
-            elseif ($configuration.PrefixOrigin -eq 'Dhcp')
+            'Deprecated'
             {
-                if ($null -eq $dhcpAdapter)
-                {
-                    $dhcpAdapter = $configuration
-                }
-                else
-                {
-                    Write-Output 'Both adapters are set to DHCP - you will need to conifgure the network adapters manually'
-                    exit 1
-                }
+                continue
+            }
+            'Preferred'
+            {
+                Out-Null
+            }
+        }
+        if ($configuration.PrefixOrigin -eq 'Manual')
+        {
+            if ($null -eq $manualAdapter)
+            {
+                $manualAdapter = $configuration
+            }
+            else
+            {
+                Write-Output 'Both adapters are set to Manual - you will need to conifgure the network adapters manually'
+                exit 1
+            }
+        }
+        elseif ($configuration.PrefixOrigin -eq 'Wellknown')
+        {
+            if ($null -eq $wellknownAdapter)
+            {
+                $wellknownAdapter = $configuration
+            }
+            else
+            {
+                Write-Output 'Both adapters are set to Wellknown - you will need to conifgure the network adapters manually'
+                exit 1
+            }
+        }
+        elseif ($configuration.PrefixOrigin -eq 'Dhcp')
+        {
+            if ($null -eq $dhcpAdapter)
+            {
+                $dhcpAdapter = $configuration
+            }
+            else
+            {
+                Write-Output 'Both adapters are set to DHCP - you will need to conifgure the network adapters manually'
+                exit 1
             }
         }
     }
-    if (($null -eq $wellknownAdapter) -and ($null -eq $manualAdapter))
+}
+if (($null -eq $wellknownAdapter) -and ($null -eq $manualAdapter))
+{
+    Write-Output 'The second Ethernet Adapter was not automatically identified - you will need to conifgure the network adapters manually'
+    exit 1
+}
+$adapterToChange = $null
+if ($null -ne $dhcpAdapter)
+{
+    if ($null -ne $manualAdapter)
     {
-        Write-Output 'The second Ethernet Adapter was not automatically identified - you will need to conifgure the network adapters manually'
-        exit 1
+        $adapterToChange = $manualAdapter
     }
-    $adapterToChange = $null
-    if ($null -ne $dhcpAdapter)
+    elseif ($null -ne $wellknownAdapter)
     {
-        if ($null -ne $manualAdapter)
-        {
-            $adapterToChange = $manualAdapter
-        }
-        elseif ($null -ne $wellknownAdapter)
-        {
-            $adapterToChange = $wellknownAdapter
-        }
-        else
-        {
-            Write-Output 'Could not automatically configure - you will need to conifgure the network adapters manually'
-            exit 1
-        }
+        $adapterToChange = $wellknownAdapter
     }
     else
     {
         Write-Output 'Could not automatically configure - you will need to conifgure the network adapters manually'
         exit 1
     }
-    if ($null -ne $adapterToChange)
+}
+else
+{
+    Write-Output 'Could not automatically configure - you will need to conifgure the network adapters manually'
+    exit 1
+}
+if ($null -ne $adapterToChange)
+{
+    $interfaceIndex = $adapterToChange.InterfaceIndex
+    Write-Output "Setting $($adapterToChange.InterfaceAlias) to $newIPAddress $newSubnetMask ..."
+    # set the new ipaddress - we can use the powershell version of this, but the netsh call is actaully simpler to use...
+    netsh interface ipv4 set address $interfaceIndex static $newIPAddress $newSubnetMask
+    # give the network some time to go from tentative to preferred after we set it (technically we could use a do while here, but this is simpler and if it goes bad, it will need to be sorted manualy anyway)
+    Start-Sleep 5
+    $updatedConfigurations = Get-NetIPAddress -InterfaceIndex $interfaceIndex -AddressFamily IPv4
+    Write-Output "DHCP $($dhcpAdapter.InterfaceAlias) $($dhcpAdapter.IPAddress)"
+    foreach ($configuration in $updatedConfigurations)
     {
-        $interfaceIndex = $adapterToChange.InterfaceIndex
-        Write-Output "Setting $($adapterToChange.InterfaceAlias) to $newIPAddress $newSubnetMask ..."
-        # set the new ipaddress - we can use the powershell version of this, but the netsh call is actaully simpler to use...
-        netsh interface ipv4 set address $interfaceIndex static $newIPAddress $newSubnetMask
-        # give the network some time to go from tentative to preferred after we set it (technically we could use a do while here, but this is simpler and if it goes bad, it will need to be sorted manualy anyway)
-        Start-Sleep 5
-        $updatedConfigurations = Get-NetIPAddress -InterfaceIndex $interfaceIndex -AddressFamily IPv4
-        Write-Output "DHCP $($dhcpAdapter.InterfaceAlias) $($dhcpAdapter.IPAddress)"
-        foreach ($configuration in $updatedConfigurations)
+        Write-Output "Updated $($configuration.InterfaceAlias) $($configuration.PrefixOrigin) $($configuration.IPAddress) $($configuration.AddressState)"
+        switch ($configuration.AddressState)
         {
-            Write-Output "Updated $($configuration.InterfaceAlias) $($configuration.PrefixOrigin) $($configuration.IPAddress) $($configuration.AddressState)"
-            switch ($configuration.AddressState)
+            'Invalid'
             {
-                'Invalid'
-                {
-                    Write-Output "Warning - Invalid IP Address has been detected on $($configuration.InterfaceAlias) - PLEASE CONFIGURE THE SECONDARY IP ADDRESSES MANUALLY"
-                }
-                'Tentative'
-                {
-                    Write-Output "Warning - Tentative IP Address has been detected on $($configuration.InterfaceAlias) - PLEASE CONFIGURE THE SECONDARY IP ADDRESSES MANUALLY"
-                }
-                'Duplicate'
-                {
-                    Write-Output "Warning - Duplicate IP Addresses have been detected on $($configuration.InterfaceAlias) - PLEASE CONFIGURE THE SECONDARY IP ADDRESSES MANUALLY"
-                }
-                'Deprecated'
-                {
-                    Write-Output "Warning - Depricated IP Addresses have been detected on $($configuration.InterfaceAlias) - PLEASE CHECK THE SECONDARY IP ADDRESS ASSIGNMENT"
-                }
-                'Preferred'
-                {
-                    Out-Null
-                }
+                Write-Output "Warning - Invalid IP Address has been detected on $($configuration.InterfaceAlias) - PLEASE CONFIGURE THE SECONDARY IP ADDRESSES MANUALLY"
+            }
+            'Tentative'
+            {
+                Write-Output "Warning - Tentative IP Address has been detected on $($configuration.InterfaceAlias) - PLEASE CONFIGURE THE SECONDARY IP ADDRESSES MANUALLY"
+            }
+            'Duplicate'
+            {
+                Write-Output "Warning - Duplicate IP Addresses have been detected on $($configuration.InterfaceAlias) - PLEASE CONFIGURE THE SECONDARY IP ADDRESSES MANUALLY"
+            }
+            'Deprecated'
+            {
+                Write-Output "Warning - Depricated IP Addresses have been detected on $($configuration.InterfaceAlias) - PLEASE CHECK THE SECONDARY IP ADDRESS ASSIGNMENT"
+            }
+            'Preferred'
+            {
+                Out-Null
             }
         }
     }
