@@ -330,7 +330,7 @@ $deviceProxyXml = $deviceProxyDirectory + '\DeviceProxy.xml'
 Write-Output 'Stop DeviceProxy Service...'
 Stop-Service DeviceProxy 2>$null
 
-Write-Output 'Uninstall serman...'
+Write-Output 'Uninstall DeviceProxy...'
 serman uninstall DeviceProxy 2>$null | Out-Null
 
 Write-Output 'Remove serman cache...'

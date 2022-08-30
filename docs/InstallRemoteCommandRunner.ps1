@@ -194,7 +194,6 @@ catch
     Write-Output 'Installing Scoop package management system...'
 
     Invoke-Expression "& {$(Invoke-RestMethod get.scoop.sh)} -RunAsAdmin"
-    #Invoke-Expression (New-Object System.Net.WebClient).DownloadString('https://get.scoop.sh')
 }
 
 scoop update
@@ -209,71 +208,46 @@ if (!$gitInstalled)
 scoop bucket add scoop-dev https://github.com/Design2Production/scoop-dev.git
 
 $sermanInstalled = $($installedApps | Select-String -Pattern 'serman' -CaseSensitive -SimpleMatch)
-$deviceProxyInstalled = $($installedApps | Select-String -Pattern 'DeviceProxy' -CaseSensitive -SimpleMatch)
+$remoteCommandRunnerInstalled = $($installedApps | Select-String -Pattern 'RemoteCommandRunner' -CaseSensitive -SimpleMatch)
 if (!$sermanInstalled)
 {
     scoop install serman
 }
-if (!$deviceProxyInstalled)
+if (!$remoteCommandRunnerInstalled)
 {
-    scoop install DeviceProxy
+    scoop install RemoteCommandRunner
 }
 
-#create data folders
-Write-Output 'Create ProgramData directories...'
-New-Item -ItemType Directory -Force -Path C:\ProgramData\DP\DeviceProxy\cache\firmware | Out-Null
-New-Item -ItemType Directory -Force -Path C:\ProgramData\DP\DeviceProxy\data | Out-Null
-New-Item -ItemType Directory -Force -Path C:\ProgramData\DP\DeviceProxy\log | Out-Null
-
-Write-Output 'Copy data files...'
-$deviceProxyDirectory = $(scoop prefix DeviceProxy)
-if ($installation -eq 'new')
-{
-    #copy settings files from applicaiton and open for editing
-    Copy-Item "$deviceProxyDirectory\setting.json" -Destination 'C:\ProgramData\DP\DeviceProxy\setting.json'
-    Write-Output 'Editing setting.json in Notepad - Save file and exit Notepad to continue...'
-    notepad.exe C:\ProgramData\DP\DeviceProxy\setting.json | Out-Null
-    Write-Output 'setting.json saved'
-    Write-Output 'Editing data.json in Notepad - Save file and exit Notepad to continue...'
-    Copy-Item "$deviceProxyDirectory\data.json" -Destination 'C:\ProgramData\DP\DeviceProxy\data\data.json'
-    notepad.exe C:\ProgramData\DP\DeviceProxy\data\data.json | Out-Null
-    Write-Output 'data.json saved'
-}
-else
-{
-    #copy settings files from old installation
-    Copy-Item $settingFile -Destination 'C:\ProgramData\DP\DeviceProxy\setting.json'
-    Copy-Item $dataFile -Destination 'C:\ProgramData\DP\DeviceProxy\data\data.json'
-}
+$remoteCommandRunnerDirectory = $(scoop prefix RemoteCommandRunner)
 
 # Add auto update to scheduler
 Write-Output 'Add task for Autoupdate...'
-$taskName = 'DPUpdateApps'
+$taskName = 'DPUpdateRemoteCommandRunner'
 $taskExists = Get-ScheduledTask | Where-Object { $_.TaskName -like $taskName }
 if ($taskExists)
 {
-    Unregister-ScheduledTask -TaskName 'DPUpdateApps' -Confirm:$false 2>$null
+    Unregister-ScheduledTask -TaskName 'DPUpdateRemoteCommandRunner' -Confirm:$false 2>$null
 }
-$action = New-ScheduledTaskAction -Execute 'C:\scoop\apps\DeviceProxy\current\DPUpdateApps.ps1'
+$action = New-ScheduledTaskAction -Execute 'C:\scoop\apps\RemoteCommandRunner\current\DPUpdateRemoteCommandRunner.ps1'
 $trigger = New-ScheduledTaskTrigger -Daily -At 3am
 $principal = New-ScheduledTaskPrincipal -UserId 'NT AUTHORITY\SYSTEM' -LogonType ServiceAccount -RunLevel Highest
 $settings = New-ScheduledTaskSettingsSet -MultipleInstances Parallel
 Register-ScheduledTask -TaskName $taskName -TaskPath '\DP\' -Action $action -Trigger $trigger -Settings $settings -Principal $principal
 
-# Add DeviceProxy as Windows Service
-$deviceProxyXml = $deviceProxyDirectory + '\DeviceProxy.xml'
-Write-Output 'Stop DeviceProxy Service...'
+# Add RemoteCommandRunner as Windows Service
+$remoteCommandRunnerXml = $remoteCommandRunnerDirectory + '\RemoteCommandRunner.xml'
+Write-Output 'Stop RemoteCommandRunner Service...'
 Stop-Service DeviceProxy 2>$null
 
-Write-Output 'Uninstall serman...'
-serman uninstall DeviceProxy 2>$null | Out-Null
+Write-Output 'Uninstall RemoteCommandRunner...'
+serman uninstall RemoteCommandRunner 2>$null | Out-Null
 
 Write-Output 'Remove serman cache...'
 Remove-Item C:\serman\* -Recurse -Force 2>$null
 Remove-Item C:\serman\ 2>$null
 
-Write-Output 'Install DeviceProxy service'
-serman install $deviceProxyXml ASP_ENV=$environment --overwrite
+Write-Output 'Install RemoteCommandRunner service'
+serman install $remoteCommandRunnerXml --overwrite
 
-Write-Output 'DeviceProxy installation complete'
+Write-Output 'RemoteCommandRunner installation complete'
 
