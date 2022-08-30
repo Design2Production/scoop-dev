@@ -58,17 +58,20 @@ Switch ($installationType)
     }
 }
 
-$settingFile = "$installation\conf\setting.json"
-$dataFile = "$installation\data\data.json"
-if ($(Test-Path -Path $settingFile) -ne $true)
+if ($installation -ne 'new')
 {
-    Write-Output "setting.json does not exist in old Installation folder $settingFile"
-    exit
-}
-if ($(Test-Path -Path $dataFile) -ne $true)
-{
-    Write-Output "data.json does not exist in old Installation folder $installation\..\data\data.json"
-    exit
+    $settingFile = "$installation\conf\setting.json"
+    $dataFile = "$installation\data\data.json"
+    if ($(Test-Path -Path $settingFile) -ne $true)
+    {
+        Write-Output "setting.json does not exist in old Installation folder $settingFile"
+        exit
+    }
+    if ($(Test-Path -Path $dataFile) -ne $true)
+    {
+        Write-Output "data.json does not exist in old Installation folder $installation\..\data\data.json"
+        exit
+    }
 }
 
 # Open the firewall for pings
@@ -313,13 +316,13 @@ else
 
 # Add auto update to scheduler
 Write-Output 'Add task for Autoupdate...'
-$taskName = 'DPUpdateApps'
+$taskName = 'DPUpdateDeviceProxy'
 $taskExists = Get-ScheduledTask | Where-Object { $_.TaskName -like $taskName }
 if ($taskExists)
 {
-    Unregister-ScheduledTask -TaskName 'DPUpdateApps' -Confirm:$false 2>$null
+    Unregister-ScheduledTask -TaskName "$taskName" -Confirm:$false 2>$null
 }
-$action = New-ScheduledTaskAction -Execute 'C:\scoop\apps\DeviceProxy\current\DPUpdateApps.ps1'
+$action = New-ScheduledTaskAction -Execute 'C:\scoop\apps\DeviceProxy\current\DPUpdateDeviceProxy.ps1'
 $trigger = New-ScheduledTaskTrigger -Daily -At 3am
 $principal = New-ScheduledTaskPrincipal -UserId 'NT AUTHORITY\SYSTEM' -LogonType ServiceAccount -RunLevel Highest
 $settings = New-ScheduledTaskSettingsSet -MultipleInstances Parallel

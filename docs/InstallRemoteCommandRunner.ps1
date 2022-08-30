@@ -226,7 +226,7 @@ $taskName = 'DPUpdateRemoteCommandRunner'
 $taskExists = Get-ScheduledTask | Where-Object { $_.TaskName -like $taskName }
 if ($taskExists)
 {
-    Unregister-ScheduledTask -TaskName 'DPUpdateRemoteCommandRunner' -Confirm:$false 2>$null
+    Unregister-ScheduledTask -TaskName "$taskName" -Confirm:$false 2>$null
 }
 $action = New-ScheduledTaskAction -Execute 'C:\scoop\apps\RemoteCommandRunner\current\DPUpdateRemoteCommandRunner.ps1'
 $trigger = New-ScheduledTaskTrigger -Daily -At 3am
