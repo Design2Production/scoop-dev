@@ -269,7 +269,7 @@ Register-ScheduledTask -TaskName $taskName -TaskPath '\DP\' -Action $action -Tri
 # Add RemoteCommandRunner as Windows Service
 $remoteCommandRunnerXml = $remoteCommandRunnerDirectory + '\RemoteCommandRunner.xml'
 Write-Output 'Stop RemoteCommandRunner Service...'
-Stop-Service DeviceProxy 2>$null
+Stop-Service RemoteCommandRunner 2>$null
 
 Write-Output 'Uninstall RemoteCommandRunner...'
 serman uninstall RemoteCommandRunner 2>$null | Out-Null
