@@ -75,30 +75,31 @@ if ($installation -ne 'new')
 }
 
 # Open the firewall for pings
-$firewallRule = Get-NetFirewallRule -DisplayName 'ICMP Allow incoming V4 echo request' 2>$null
+$firewallRuleName = 'ICMP Allow incoming V4 echo request'
+$firewallRule = Get-NetFirewallRule -DisplayName "$firewallRuleName" 2>$null
 if ($null -eq $firewallRule)
 {
-    Write-Output 'Adding Firewall Ping Rule...'
-    netsh advfirewall firewall add rule name="ICMP Allow incoming V4 echo request" protocol=icmpv4:8,any dir=in action=allow
+    Write-Output "Adding Firewall Rule '$firewallRuleName' ..."
+    netsh advfirewall firewall add rule name="$firewallRuleName" protocol=icmpv4:8,any dir=in action=allow
 }
 else
 {
     if ($firewallRule.Enabled -eq 'True')
     {
-        Write-Output 'Firewall Ping Rule exists and is enabled.'
+        Write-Output "Firewall Rule '$firewallRuleName' exists and is enabled."
     }
     else
     {
-        Write-Output 'Firewall Ping Rule exists but is disabled - Enabling now...'
-        Enable-NetFirewallRule -DisplayName 'ICMP Allow incoming V4 echo request'
-        $firewallRule = Get-NetFirewallRule -DisplayName 'ICMP Allow incoming V4 echo request' 2>$null
+        Write-Output "Firewall Rule '$firewallRuleName' exists but is disabled - Enabling now..."
+        Enable-NetFirewallRule -DisplayName $firewallRuleName
+        $firewallRule = Get-NetFirewallRule -DisplayName "$firewallRuleName" 2>$null
         if ($firewallRule.Enabled -eq 'True')
         {
-            Write-Output 'Firewall Ping Rule exists and is enabled.'
+            Write-Output "Firewall Rule '$firewallRuleName' exists and is enabled."
         }
         else 
         {
-            Write-Output 'Firewall Ping Rule exists but could not be enabled - please check and enable manually'
+            Write-Output "Firewall Rule '$firewallRuleName' exists but could not be enabled - please check and enable manually"
             exit 1
         }
     }

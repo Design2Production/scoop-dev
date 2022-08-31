@@ -14,27 +14,27 @@ $firewallRuleName = 'ICMP Allow incoming V4 echo request'
 $firewallRule = Get-NetFirewallRule -DisplayName "$firewallRuleName" 2>$null
 if ($null -eq $firewallRule)
 {
-    Write-Output 'Adding Firewall Ping Rule...'
+    Write-Output "Adding Firewall Rule '$firewallRuleName' ..."
     netsh advfirewall firewall add rule name="$firewallRuleName" protocol=icmpv4:8,any dir=in action=allow
 }
 else
 {
     if ($firewallRule.Enabled -eq 'True')
     {
-        Write-Output 'Firewall Ping Rule exists and is enabled.'
+        Write-Output "Firewall Rule '$firewallRuleName' exists and is enabled."
     }
     else
     {
-        Write-Output "Firewall Rule $firewallRuleName exists but is disabled - Enabling now..."
+        Write-Output "Firewall Rule '$firewallRuleName' exists but is disabled - Enabling now..."
         Enable-NetFirewallRule -DisplayName $firewallRuleName
         $firewallRule = Get-NetFirewallRule -DisplayName "$firewallRuleName" 2>$null
         if ($firewallRule.Enabled -eq 'True')
         {
-            Write-Output "Firewall Rule $firewallRuleName exists and is enabled."
+            Write-Output "Firewall Rule '$firewallRuleName' exists and is enabled."
         }
         else 
         {
-            Write-Output "Firewall Rule $firewallRuleName exists but could not be enabled - please check and enable manually"
+            Write-Output "Firewall Rule '$firewallRuleName' exists but could not be enabled - please check and enable manually"
             exit 1
         }
     }
@@ -45,27 +45,27 @@ $firewallRuleName = 'TCP Port 5002'
 $firewallRule = Get-NetFirewallRule -DisplayName "$firewallRuleName" 2>$null
 if ($null -eq $firewallRule)
 {
-    Write-Output 'Adding Firewall Ping Rule...'
+    Write-Output "Adding Firewall Rule '$firewallRuleName' ..."
     netsh advfirewall firewall add rule name="$firewallRuleName" dir=in action=allow protocol=TCP localport=5002 program="C:\scoop\apps\RemoteCommandRunner\current\RemoteCommandRunner.exe"
 }
 else
 {
     if ($firewallRule.Enabled -eq 'True')
     {
-        Write-Output 'Firewall Ping Rule exists and is enabled.'
+        Write-Output "Firewall Rule '$firewallRuleName' exists and is enabled."
     }
     else
     {
-        Write-Output "Firewall Rule $firewallRuleName exists but is disabled - Enabling now..."
+        Write-Output "Firewall Rule '$firewallRuleName' exists but is disabled - Enabling now..."
         Enable-NetFirewallRule -DisplayName $firewallRuleName
         $firewallRule = Get-NetFirewallRule -DisplayName "$firewallRuleName" 2>$null
         if ($firewallRule.Enabled -eq 'True')
         {
-            Write-Output "Firewall Rule $firewallRuleName exists and is enabled."
+            Write-Output "Firewall Rule '$firewallRuleName' exists and is enabled."
         }
         else 
         {
-            Write-Output "Firewall Rule $firewallRuleName exists but could not be enabled - please check and enable manually"
+            Write-Output "Firewall Rule '$firewallRuleName' exists but could not be enabled - please check and enable manually"
             exit 1
         }
     }
