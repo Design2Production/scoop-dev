@@ -46,7 +46,7 @@ $firewallRule = Get-NetFirewallRule -DisplayName "$firewallRuleName" 2>$null
 if ($null -eq $firewallRule)
 {
     Write-Output "Adding Firewall Rule '$firewallRuleName' ..."
-    netsh advfirewall firewall add rule name="$firewallRuleName" dir=in action=allow protocol=TCP localport=5002 program="C:\scoop\apps\RemoteCommandRunner\current\RemoteCommandRunner.exe"
+    netsh advfirewall firewall add rule name="$firewallRuleName" dir=in action=allow protocol=TCP localport=5002
 }
 else
 {
