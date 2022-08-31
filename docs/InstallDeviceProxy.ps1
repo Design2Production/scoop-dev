@@ -339,7 +339,7 @@ serman uninstall DeviceProxy 2>$null | Out-Null
 
 Write-Output 'Remove serman cache...'
 Remove-Item C:\serman\* -Recurse -Force 2>$null
-Remove-Item C:\serman\ 2>$null
+Remove-Item C:\serman\ -Recurse -Force 2>$null
 
 Write-Output 'Install DeviceProxy service'
 serman install $deviceProxyXml ASP_ENV=$environment --overwrite
