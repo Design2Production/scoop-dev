@@ -334,12 +334,15 @@ $deviceProxyXml = $deviceProxyDirectory + '\DeviceProxy.xml'
 Write-Output 'Stop DeviceProxy Service...'
 Stop-Service DeviceProxy 2>$null
 
-Write-Output 'Uninstall DeviceProxy...'
-serman uninstall DeviceProxy 2>$null | Out-Null
-
-Write-Output 'Remove serman cache...'
-Remove-Item C:\serman\* -Recurse -Force 2>$null
-Remove-Item C:\serman\ -Recurse -Force 2>$null
+$sermanFolder = 'C:\serman'
+if ($(Test-Path -Path $sermanFolder) -eq $true)
+{
+    Write-Output 'Uninstall DeviceProxy...'
+    serman uninstall DeviceProxy 2>$null | Out-Null
+    
+    Write-Output 'Remove serman cache...'
+    Remove-Item C:\serman -Recurse -Force 2>$null
+}
 
 Write-Output 'Install DeviceProxy service'
 serman install $deviceProxyXml ASP_ENV=$environment --overwrite
