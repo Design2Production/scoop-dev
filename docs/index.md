@@ -13,20 +13,18 @@
     3. Right-Click on **Windows Powershell*** and select **"Run As Administrator"**
     4. Click on **Yes** when asked for permission
 
-2. If Updating an existing machine remove the old start batch file
-<pre>
-rm <b>pathToDesktop</b>/start.cmd
-</pre>
-So for SureVision, this will be 
-<pre>
-rm C:\Users\SureVision\Desktop\start.cmd
-</pre>
+2. If Updating an existing machine:
 
-3. If Update an existing machine, remove the old run task
-<pre>
-Unregister-ScheduledTask -TaskName "RunNetworkProxy" -Confirm:$false
-</pre>
-If your previous installation had a different task name created, you can also open <b>Task Scheduler</b> to ensure the start up task has been removed
+    1. Remove the old start batch file which was previously located in the desktop folder
+    <pre>
+    rm <b>pathToDesktop</b>/start.cmd
+    </pre>
+
+    2. Remove the old run task from the scheduler
+    <pre>
+    Unregister-ScheduledTask -TaskName "RunNetworkProxy" -Confirm:$false
+    </pre>
+    *If your previous installation had a different task name created, you can also open <b>Task Scheduler</b> to ensure the start up task has been removed*
 
 ## Installation
 
@@ -79,20 +77,18 @@ rm -r <b>OldInstallationFolder</b>
     3. Right-Click on **Windows Powershell*** and select **"Run As Administrator"**
     4. Click on **Yes** when asked for permission
 
-2. If Updating an existing machine remove the old start batch file
-<pre>
-rm <b>pathToDesktop</b>/start.cmd
-</pre>
-So for SureVision, this will be 
-<pre>
-rm C:\Users\SureVision\Desktop\start.cmd
-</pre>
+2. If Updating an existing machine:
 
-3. If Update an existing machine, remove the old run task
-<pre>
-Unregister-ScheduledTask -TaskName "RunRemoteCommandRunner" -Confirm:$false
-</pre>
-If your previous installation had a different task name created, you can also open <b>Task Scheduler</b> to ensure the start up task has been removed
+    1. Remove the old start batch file
+    <pre>
+    rm <b>pathToDesktop</b>/start.cmd
+    </pre>
+
+    2. Remove the old run task from the scheduler
+    <pre>
+    Unregister-ScheduledTask -TaskName "RunRemoteCommandRunner" -Confirm:$false
+    </pre>
+    *If your previous installation had a different task name created, you can also open <b>Task Scheduler</b> to ensure the start up task has been removed*
 
 ## Installation
 
@@ -128,4 +124,3 @@ rm ./InstallRemoteCommandRunner.ps1
 <pre>
 rm -r <b>OldInstallationFolder</b>
 </pre>
-
