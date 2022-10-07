@@ -1,4 +1,4 @@
-# DP Windows Installation
+# DP Windows Installation for Surevision
 
 [DeviceProxy Installation](#deviceproxy-installation)
 
@@ -16,14 +16,10 @@
 2. If Updating an existing machine:
 
     1. Remove the old start batch file which was previously located in the desktop folder
-    <pre>
-    rm <b>pathToDesktop</b>/start.cmd
-    </pre>
+    <pre> rm <b>pathToDesktop</b>/start.cmd </pre>
 
     2. Remove the old run task from the scheduler
-    <pre>
-    Unregister-ScheduledTask -TaskName "RunNetworkProxy" -Confirm:$false
-    </pre>
+    <pre> Unregister-ScheduledTask -TaskName "RunNetworkProxy" -Confirm:$false </pre>
     *If your previous installation had a different task name created, you can also open <b>Task Scheduler</b> to ensure the start up task has been removed*
 
 ## Installation
@@ -48,22 +44,29 @@ set-executionpolicy remotesigned -scope currentuser
     2. <pre>Hardware - For Indoor Units: DPEMS-V1_DBV3</pre>
     2. <pre>Hardware - For Outdoor Units: DPEMS-V2</pre>
     4. <pre>Installation: new | <i>fullPathOfOldDeviceProxyFolder</i></pre>
+    5. <pre>InstallationType: singlePC | dualPC</pre>
+So the following command line will install the proxy on a new outdoor unit in a production environment
 <pre>
-.\InstallDeviceProxy.ps1 Production DPEMS-V2 new
+.\InstallDeviceProxy.ps1 Production DPEMS-V2 new singlePC
 </pre>
 
-## Ensure the deviceId is set to a unique value and the deviceAddress points to the DPEMS IP address for outdoor units
+## Configuration
+When prompted to edit the settings file, ensure the deviceId is set to a unique value. 
+
+For out door units, set the deviceAddress to the IP Address of the DPEMS - NOTE this value is not used for indoor units.
+
 The deviceId is what will identify the devie in the DPEMS portal
 
-The port and daughterBoardPort will be automatically detected - the values here will be updated by the proxy when it starts.
+For indoor units the port and daughterBoardPort will be automatically detected - the values here will be updated by the proxy when it starts.
+
+The file should look like this, ready for you to edit the deviceId
 
 <pre>
 {
   "port": "COM6",
   "daughterBoardPort": "COM7",
   "deviceAddress": "http://192.168.0.28:8000",
-  "deviceId": "JN-TEST-004",
-  "enableWatchDog": "true",
+  "deviceId": "UniqueIdentifier",
   "LcdTurnOnSchedule": "",
   "LcdTurnOffSchedule": "",
   "DeviceInfoPollerScheduler": "* * * * *",
@@ -82,10 +85,6 @@ rm ./InstallDeviceProxy.ps1
 <pre>
 rm -r <b>OldInstallationFolder</b>
 </pre>
-
-
-
-
 
 # RemoteCommandRunner Installation for Double Sided Units
 
