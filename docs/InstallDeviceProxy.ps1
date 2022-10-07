@@ -303,10 +303,7 @@ if ($installation -eq 'new')
     Write-Output 'Editing setting.json in Notepad - Save file and exit Notepad to continue...'
     notepad.exe C:\ProgramData\DP\DeviceProxy\setting.json | Out-Null
     Write-Output 'setting.json saved'
-    Write-Output 'Editing data.json in Notepad - Save file and exit Notepad to continue...'
     Copy-Item "$deviceProxyDirectory\data.json" -Destination 'C:\ProgramData\DP\DeviceProxy\data\data.json'
-    notepad.exe C:\ProgramData\DP\DeviceProxy\data\data.json | Out-Null
-    Write-Output 'data.json saved'
 }
 else
 {

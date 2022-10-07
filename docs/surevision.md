@@ -52,6 +52,25 @@ set-executionpolicy remotesigned -scope currentuser
 .\InstallDeviceProxy.ps1 Production DPEMS-V2 new
 </pre>
 
+## Ensure the deviceId is set to a unique value and the deviceAddress points to the DPEMS IP address for outdoor units
+The deviceId is what will identify the devie in the DPEMS portal
+
+The port and daughterBoardPort will be automatically detected - the values here will be updated by the proxy when it starts.
+
+<pre>
+{
+  "port": "COM6",
+  "daughterBoardPort": "COM7",
+  "deviceAddress": "http://192.168.0.28:8000",
+  "deviceId": "JN-TEST-004",
+  "enableWatchDog": "true",
+  "LcdTurnOnSchedule": "",
+  "LcdTurnOffSchedule": "",
+  "DeviceInfoPollerScheduler": "* * * * *",
+  "enableRemoteCommand": "true"
+}
+</pre>
+
 ## Post Instllation
 
 1. Delete the install script
