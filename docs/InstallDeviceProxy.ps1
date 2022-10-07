@@ -347,4 +347,9 @@ if ($(Test-Path -Path $sermanFolder) -eq $true)
 Write-Output 'Install DeviceProxy service'
 serman install $deviceProxyXml ASP_ENV=$environment --overwrite
 
+# write out environment so the update routine can read it
+"{
+    `"server`": `"$server`"
+ }" | Out-File -FilePath C:\ProgramData\DP\DeviceProxy\server.json
+
 Write-Output 'DeviceProxy installation complete'
