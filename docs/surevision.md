@@ -7,13 +7,26 @@
 # DeviceProxy Installation
 
 ## Pre Installation
-1. Start Powershell as Administrator
+1. For new ***singlePC*** installations, ensure the Ethernet connection to the switch (connected to the internet) is made prior to installation, otherwise the automatic network configuration will throw an exception and abort the installation.
+
+2. For new ***dualPC*** installations, ensure the Ethernet connections are made prior to installation, otherwise the automatic network configuration will throw an exception and abort the installation.
+
+    ### For Indoor Units
+    1. On both PCs, connect the short Ethernet cable between the PCs to the right most port (when looking from the front of the PC)
+    2. On both PCs, connect the longer Ethernet cables from the PCs to the swith to the left most port (when looking from the front of the PC)
+
+    ### For Outdoor Units
+    1. On the main PC, connect the short Etherbet cable to the DPEMS to the left more port (when looking from the front of the PC)
+    2. On the main PC, connect the longer Ethernet cable from the PC to the swith to the right most port (when looking from the front of the PC)
+    3. On the second PC, connect the longer Ethernet cable from the PC to the swith to the left most port (when looking from the front of the PC)
+
+3. Start Powershell as Administrator
     1. Press the **Windows** key
     2. Type Powershell
     3. Right-Click on **Windows Powershell*** and select **"Run As Administrator"**
     4. Click on **Yes** when asked for permission
 
-2. If Updating an existing machine (Note: this will be automated in a future version of the installation script)
+4. If Updating an existing machine (Note: this will be automated in a future version of the installation script)
 
     1. Remove the old start batch file which was previously located in the desktop folder
     <pre> rm <b>pathToDesktop</b>/start.cmd </pre>
