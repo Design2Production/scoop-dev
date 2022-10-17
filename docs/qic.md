@@ -29,9 +29,9 @@ set-executionpolicy remotesigned -scope currentuser
 
 3. Run the install script with the following arguments
     1. <pre>Server: Production</pre>
-    2. <pre>Hardware: DPEMS-V1_DBV2</pre>
-    4. <pre>Installation: new</pre>
-    5. <pre>InstallationType: singlePC</pre>
+    2. <pre>Installation: new</pre>
+    3. <pre>InstallationType: singlePC</pre>
+    4. <pre>Hardware: DPEMS-V1_DBV2</pre>
 So the following command line will install the proxy in a production environment
 <pre>
 .\InstallDeviceProxy.ps1 Production DPEMS-V1_DBV2 new singlePC
