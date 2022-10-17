@@ -27,15 +27,15 @@ If the installation script fails with ***Invoke-WebRequest : The request was abo
 set-executionpolicy remotesigned -scope currentuser  
 </pre>
 
-3. Run the install script with the following arguments
-    1. <pre>Server: Production</pre>
-    2. <pre>Installation: new</pre>
-    3. <pre>InstallationType: singlePC</pre>
-    4. <pre>Hardware: DPEMS-V1_DBV2</pre>
-So the following command line will install the proxy in a production environment
+3. Run the install script:
 <pre>
 .\InstallDeviceProxy.ps1 Production new singlePC DeviceId DPEMS-V1_DBV2
 </pre>
+The arguments are as follows:
+   1. <pre>Server: Production</pre>
+   2. <pre>Installation: new</pre>
+   3. <pre>InstallationType: singlePC</pre>
+   4. <pre>Hardware: DPEMS-V1_DBV2</pre>
 
 ## Post Instllation
 
