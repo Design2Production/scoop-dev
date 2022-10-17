@@ -1,5 +1,47 @@
-#Requires -RunAsAdministrator
+###Requires -RunAsAdministrator
 Set-PSDebug -Trace 0
+
+Function SerialDisableDPEMSWatchDog
+{
+    # Disable the DPEMS watchdog using a network call so we don't get killed part way through the installation
+    # The Proxy will enable the watchdog when it starts running
+
+    $serialPortNames = [System.IO.Ports.SerialPort]::getportnames()
+    foreach ($serialPortName in $serialPortNames)
+    {
+        Write-Output "Open Port: $serialPortName"
+        $port = New-Object System.IO.Ports.SerialPort $serialPortName,9600,None,8,one
+        $port.Open()
+        Write-Output 'Send Serial Watchdog Disable'
+        $port.Write('e0')
+        $port.Close()
+        Write-Output "Close Port: $serialPortName"
+    }
+}
+
+Function NetworkDisableDPEMSWatchDog
+{
+    # Disable the DPEMS watchdog using a network call so we don't get killed part way through the installation
+    # The Proxy will enable the watchdog when it starts running
+
+    $setting = Get-Content -Raw -Path C:\ProgramData\DP\DeviceProxy\setting.json | ConvertFrom-Json
+    $deviceAddress = $setting.deviceAddress
+    $postCommand = "$deviceAddress/setWatchDog"
+
+    Write-Output $postCommand
+
+    $body = @{
+        'status' = 'false'
+    } | ConvertTo-Json
+    
+    $header = @{
+        'Accept'          = 'application/json'
+        'connectapitoken' = '97fe6ab5b1a640909551e36a071ce9ed'
+        'Content-Type'    = 'application/json'
+    } 
+    
+    Invoke-RestMethod -Uri "$postCommand" -Method 'Post' -Body $body -Headers $header | ConvertTo-Html | Out-Null
+}
 
 Write-Output 'Downloading and installing DeviceProxy'
 
@@ -10,9 +52,11 @@ if ( $psversiontable.psversion.major -lt 3 )
 }
 
 $server = $args[0]
-$hardware = $args[1]
-$installation = $args[2]
-$installationType = $args[3]
+$oldInstallationFolder = $args[1]
+$installationType = $args[2]
+$deviceAddress = $args[3]
+$deviceId = $args[4]
+$hardware = $args[5]
 
 Switch ($server)
 {
@@ -26,22 +70,7 @@ Switch ($server)
 }
 $server = 'Windows' + $server
 
-Switch ($hardware)
-{
-    'DPEMS-V1' {}
-    'DPEMS-V1_DBV2' {}
-    'DPEMS-V1_DBV3' {}
-    'DPEMS-V1_FANEXT' {}
-    'DPEMS-V2' {}
-    default
-    {
-        Write-Output 'hardware needs to be specified DPEMS-V1 | DPEMS-V1_DBV2 | DPEMS-V1_DBV3 | DPEMS-V1_FANEXT | DPEMS-V2'
-        exit 1
-    }
-}
-$environment = $server + '_' + $hardware
-
-if (!$installation)
+if (!$oldInstallationFolder)
 {
     Write-Output 'Installation must be specified new | old_installation_folder'
     exit
@@ -58,10 +87,10 @@ Switch ($installationType)
     }
 }
 
-if ($installation -ne 'new')
+if ($oldInstallationFolder -ne 'new')
 {
-    $settingFile = "$installation\conf\setting.json"
-    $dataFile = "$installation\data\data.json"
+    $settingFile = "$oldInstallationFolder\conf\setting.json"
+    $dataFile = "$oldInstallationFolder\data\data.json"
     if ($(Test-Path -Path $settingFile) -ne $true)
     {
         Write-Output "setting.json does not exist in old Installation folder $settingFile"
@@ -69,10 +98,83 @@ if ($installation -ne 'new')
     }
     if ($(Test-Path -Path $dataFile) -ne $true)
     {
-        Write-Output "data.json does not exist in old Installation folder $installation\..\data\data.json"
+        Write-Output "data.json does not exist in old Installation folder $oldInstallationFolder\..\data\data.json"
+        exit
+    }
+    $appsettingsJson = Get-Content "$oldInstallationFolder\bin\appsettings.json" -Raw | ConvertFrom-Json
+    if ($appsettingsJson.deviceMode -eq 'http')
+    {
+        Write-Output 'device mode found: http' 
+        $hardware = 'DPEMS-V2'
+    }
+    elseif ($appsettingsJson.deviceMode -eq 'serial')
+    {
+        Write-Output 'device mode found: serial' 
+        if ($appsettingsJson.DaughterBoardType -eq 'V2')
+        {
+            Write-Output 'daughterboard found: V2' 
+            $hardware = 'DPEMS-V1_DBV2'
+        }
+        elseif ($appsettingsJson.DaughterBoardType -eq 'V3')
+        {
+            Write-Output 'daughterboard found: V3' 
+            $hardware = 'DPEMS-V1_DBV3'
+        }
+        else
+        {
+            Write-Output 'DaughterBoardType not found in appsettings.json' 
+            exit
+        }
+    }
+    else 
+    {
+        Write-Output 'deviceMode not found in appsettings.json' 
         exit
     }
 }
+
+if (!$deviceId)
+{
+    Write-Output 'A unique Device ID must be specified - eg: CompanyName-DeviceType-001'
+    exit 1
+}
+
+Switch ($hardware)
+{
+    'DPEMS-V1'
+    {
+        SerialDisableDPEMSWatchDog
+    }
+    'DPEMS-V1_DBV2'
+    {
+        SerialDisableDPEMSWatchDog
+    }
+    'DPEMS-V1_DBV3'
+    {
+        SerialDisableDPEMSWatchDog
+    }
+    'DPEMS-V1_FANEXT' 
+    {
+        SerialDisableDPEMSWatchDog
+    }
+    'DPEMS-V2'
+    {
+        if (!$deviceAddress)
+        {
+            Write-Output 'Device Address must be specified - eg: http://192.168.0.28:8000'
+            exit
+        }
+        NetworkDisableDPEMSWatchDog
+    }
+    default
+    {
+        Write-Output 'hardware needs to be specified DPEMS-V1 | DPEMS-V1_DBV2 | DPEMS-V1_DBV3 | DPEMS-V1_FANEXT | DPEMS-V2'
+        exit 1
+    }
+}
+$environment = $server + '_' + $hardware
+
+exit
 
 # Open the firewall for pings
 $firewallRuleName = 'ICMP Allow incoming V4 echo request'
@@ -296,13 +398,19 @@ New-Item -ItemType Directory -Force -Path C:\ProgramData\DP\DeviceProxy\log | Ou
 
 Write-Output 'Copy data files...'
 $deviceProxyDirectory = $(scoop prefix DeviceProxy)
-if ($installation -eq 'new')
+if ($oldInstallationFolder -eq 'new')
 {
-    #copy settings files from applicaiton and open for editing
-    Copy-Item "$deviceProxyDirectory\setting.json" -Destination 'C:\ProgramData\DP\DeviceProxy\setting.json'
-    Write-Output 'Editing setting.json in Notepad - Save file and exit Notepad to continue...'
-    notepad.exe C:\ProgramData\DP\DeviceProxy\setting.json | Out-Null
-    Write-Output 'setting.json saved'
+    #eco settings files from applicaiton and open for editing
+    "{
+        `"port`": `"COM2`",
+        `"daughterBoardPort`": `"COM3`",
+        `"deviceAddress`": `"$deviceAddress`",
+        `"deviceId`": `"$deviceId`",
+        `"LcdTurnOnSchedule`": `"`",
+        `"LcdTurnOffSchedule`": `"`",
+        `"DeviceInfoPollerScheduler`": `"* * * * *`",
+        `"enableRemoteCommand`": `"true`"
+      }" | Out-File -FilePath C:\ProgramData\DP\DeviceProxy\setting.json
     Copy-Item "$deviceProxyDirectory\data.json" -Destination 'C:\ProgramData\DP\DeviceProxy\data\data.json'
 }
 else
