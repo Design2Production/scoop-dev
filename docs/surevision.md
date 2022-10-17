@@ -13,7 +13,7 @@
     3. Right-Click on **Windows Powershell*** and select **"Run As Administrator"**
     4. Click on **Yes** when asked for permission
 
-2. If Updating an existing machine:
+2. If Updating an existing machine (Note: this will be automated in a future version of the installation script)
 
     1. Remove the old start batch file which was previously located in the desktop folder
     <pre> rm <b>pathToDesktop</b>/start.cmd </pre>
@@ -39,40 +39,17 @@ If the installation script fails with ***Invoke-WebRequest : The request was abo
 set-executionpolicy remotesigned -scope currentuser  
 </pre>
 
-3. Run the install script with the following arguments
-    1. <pre>Server: Production</pre>
-    2. <pre>Hardware - For Indoor Units: DPEMS-V1_DBV3</pre>
-    2. <pre>Hardware - For Outdoor Units: DPEMS-V2</pre>
-    4. <pre>Installation: new | <i>fullPathOfOldDeviceProxyFolder</i></pre>
-    5. <pre>InstallationType: singlePC | dualPC</pre>
-So the following command line will install the proxy on a new outdoor unit in a production environment
+3. Run the install script with the appropraite installation parameters for example:
 <pre>
-.\InstallDeviceProxy.ps1 Production DPEMS-V2 new singlePC
+.\InstallDeviceProxy.ps1 Production new singlePC QIC-Indoor-002 DPEMS-V1_DBV2
 </pre>
-
-## Configuration
-When prompted to edit the settings file, ensure the deviceId is set to a unique value. 
-
-For out door units, set the deviceAddress to the IP Address of the DPEMS - NOTE this value is not used for indoor units.
-
-The deviceId is what will identify the devie in the DPEMS portal
-
-For indoor units the port and daughterBoardPort will be automatically detected - the values here will be updated by the proxy when it starts.
-
-The file should look like this, ready for you to edit the deviceId
-
-<pre>
-{
-  "port": "COM6",
-  "daughterBoardPort": "COM7",
-  "deviceAddress": "http://192.168.0.28:8000",
-  "deviceId": "UniqueIdentifier",
-  "LcdTurnOnSchedule": "",
-  "LcdTurnOffSchedule": "",
-  "DeviceInfoPollerScheduler": "* * * * *",
-  "enableRemoteCommand": "true"
-}
-</pre>
+The arguments are as follows:
+   1. <pre>Production = which server to use: Staging | Production</pre>
+   2. <pre>new = old installation folder: new | old Installation Folder</pre>
+   3. <pre>singlePc = InstallationType: singlePC|dualPC</pre>
+   4. <pre>QIC-Indoor-002 = Unique DeviceId</pre>
+   5. <pre>DPEMS-V1_DBV2 = DPEMS Hardware Indoor Units: DPEMS-V1 | DPEMS-V1_DBV2 | DPEMS-V1_DBV3 | DPEMS-V1_FANEXT</pre>
+   6. <pre>DPEMS-V1_DBV2 = DPEMS Hardware Outdoor Units: DPEMS-V2</pre>
 
 ## Post Instllation
 
@@ -81,7 +58,7 @@ The file should look like this, ready for you to edit the deviceId
 rm ./InstallDeviceProxy.ps1
 </pre>
 
-2. Delete the old installation
+2. Delete the old installation (Note: this will be automated in a future version of the installation script)
 <pre>
 rm -r <b>OldInstallationFolder</b>
 </pre>
@@ -95,7 +72,7 @@ rm -r <b>OldInstallationFolder</b>
     3. Right-Click on **Windows Powershell*** and select **"Run As Administrator"**
     4. Click on **Yes** when asked for permission
 
-2. If Updating an existing machine:
+2. If Updating an existing machine (Note: this will be automated in a future version of the installation script)
 
     1. Remove the old start batch file
     <pre>
@@ -138,7 +115,7 @@ set-executionpolicy remotesigned -scope currentuser
 rm ./InstallRemoteCommandRunner.ps1
 </pre>
 
-2. Delete the old installation
+2. Delete the old installation (Note: this will be automated in a future version of the installation script)
 <pre>
 rm -r <b>OldInstallationFolder</b>
 </pre>
