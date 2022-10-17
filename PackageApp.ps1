@@ -19,6 +19,7 @@ Switch ($repo)
     default
     {
         Write-Output 'repo needs to be specified scoop | scoop-dev'
+        exit 1
     }
 }
 
