@@ -53,9 +53,9 @@ if ( $psversiontable.psversion.major -lt 3 )
 $server = $args[0]
 $oldInstallationFolder = $args[1]
 $installationType = $args[2]
-$deviceAddress = $args[3]
-$deviceId = $args[4]
-$hardware = $args[5]
+$deviceId = $args[3]
+$hardware = $args[4]
+$deviceAddress = $args[5]
 
 Switch ($server)
 {
@@ -172,8 +172,6 @@ Switch ($hardware)
     }
 }
 $environment = $server + '_' + $hardware
-
-exit
 
 # Open the firewall for pings
 $firewallRuleName = 'ICMP Allow incoming V4 echo request'
