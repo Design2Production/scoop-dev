@@ -34,31 +34,7 @@ set-executionpolicy remotesigned -scope currentuser
     4. <pre>Hardware: DPEMS-V1_DBV2</pre>
 So the following command line will install the proxy in a production environment
 <pre>
-.\InstallDeviceProxy.ps1 Production DPEMS-V1_DBV2 new singlePC
-</pre>
-
-## Configuration
-When prompted to edit the settings file, ensure the deviceId is set to a unique value. 
-
-Leave the deviceAddress as it is, it is not used for indoor units.
-
-The deviceId is what will identify the devie in the DPEMS portal
-
-The port and daughterBoardPort will be automatically detected - the values here will be updated by the proxy when it starts.
-
-The file should look like this, ready for you to edit the deviceId
-
-<pre>
-{
-  "port": "COM6",
-  "daughterBoardPort": "COM7",
-  "deviceAddress": "http://192.168.0.28:8000",
-  "deviceId": "UniqueIdentifier",
-  "LcdTurnOnSchedule": "",
-  "LcdTurnOffSchedule": "",
-  "DeviceInfoPollerScheduler": "* * * * *",
-  "enableRemoteCommand": "true"
-}
+.\InstallDeviceProxy.ps1 Production new singlePC DeviceId DPEMS-V1_DBV2
 </pre>
 
 ## Post Instllation
