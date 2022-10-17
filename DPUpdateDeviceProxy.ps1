@@ -1,6 +1,35 @@
 # Stop the Proxy Service
 Stop-Service DeviceProxy
 
+# disable the watchdog - both network and serial
+# the proxy will reenable it once it runs
+$setting = Get-Content -Raw -Path C:\ProgramData\DP\DeviceProxy\setting.json | ConvertFrom-Json
+$deviceAddress = $setting.deviceAddress
+$postCommand = "$deviceAddress/setWatchDog"
+
+Write-Output $postCommand
+
+$body = @{
+    'status' = 'false'
+} | ConvertTo-Json
+   
+$header = @{
+    'Accept'       = 'application/json'
+    'Content-Type' = 'application/json'
+} 
+   
+Invoke-RestMethod -Uri "$postCommand" -Method 'Post' -Body $body -Headers $header | ConvertTo-Html | Out-Null
+
+$serialPortNames = [System.IO.Ports.SerialPort]::getportnames()
+foreach ($serialPortName in $serialPortNames)
+{
+    Write-Output "Disable Watchdog on Port: $serialPortName"
+    $port = New-Object System.IO.Ports.SerialPort $serialPortName,9600,None,8,one
+    $port.Open()
+    $port.Write('e0')
+    $port.Close()
+}
+
 # ping the DPEMS
 $serverJson = Get-Content -Raw -Path C:\ProgramData\DP\DeviceProxy\server.json | ConvertFrom-Json
 $server = $serverJson.server
@@ -22,8 +51,6 @@ $header = @{
 
 Write-Output "S:$server D:$deviceId V:$version"
 
-$ScriptPath = "$PSScriptRoot\DpemsPing.ps1"
-
 Switch ($server)
 {
     'WindowsStaging'
@@ -39,41 +66,11 @@ Switch ($server)
 Write-Output "ScriptPath:$ScriptPath"
 Write-Output "ServerCommand:$serverCommand"
 
-Invoke-WebRequest -Uri "$serverCommand" -Method 'post' -Body $bodyUpdateStarted -Headers $header | ConvertTo-Html
-
-$JobContent = {
-    & $using:ScriptPath
-}
-
-$Job = Start-Job -ScriptBlock $JobContent
+Invoke-WebRequest -Uri "$serverCommand" -Method 'post' -Body $bodyUpdateStarted -Headers $header | ConvertTo-Html | Out-Null
 
 # Execute the Update
 scoop update
 scoop update *
-
-# Stop the DPEMS Ping
-New-Item -Path "$PSScriptRoot" -Name 'stopDpemsPing.flg'
-
-Write-Output 'starting wait'
-
-$timeOut = 30
-while ($Job.State -ne 'Completed')
-{
-    Write-Output 'waiting'
-    if ($timeOut -le 0)
-    {
-        Write-Output 'timeout'
-        break;
-    }
-    Start-Sleep -Seconds 1
-    $timeOut = $timeOut - 1
-}
-
-if ($timeOut -le 0)
-{
-    Write-Output 'Stop Job'
-    Stop-Job $Job
-}
 
 # version may be different after the upgrade if there was a new version
 $version = (Get-Item C:\scoop\apps\DeviceProxy\current\DeviceProxy.dll).VersionInfo.FileVersion
@@ -83,7 +80,7 @@ $bodyUpdateEnded = @{
     'status'        = 'update-ended'
 } | ConvertTo-Json
 
-Invoke-WebRequest -Uri "$serverCommand" -Method 'post' -Body $bodyUpdateEnded -Headers $header | ConvertTo-Html
+Invoke-WebRequest -Uri "$serverCommand" -Method 'post' -Body $bodyUpdateEnded -Headers $header | ConvertTo-Html | Out-Null
 
 # Restart the Proxy Service
 Start-Service DeviceProxy
