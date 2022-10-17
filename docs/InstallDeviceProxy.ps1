@@ -1,6 +1,8 @@
 #Requires -RunAsAdministrator
 Set-PSDebug -Trace 0
 
+$repo = 'scoop-dev'
+
 Function SerialDisableDPEMSWatchDog
 {
     # Disable the DPEMS watchdog using a network call so we don't get killed part way through the installation
@@ -374,7 +376,7 @@ if (!$gitInstalled)
     scoop install git
 }
 
-scoop bucket add scoop-dev https://github.com/Design2Production/scoop-dev.git
+scoop bucket add $repo https://github.com/Design2Production/$repo.git
 
 $sermanInstalled = $($installedApps | Select-String -Pattern 'serman' -CaseSensitive -SimpleMatch)
 $deviceProxyInstalled = $($installedApps | Select-String -Pattern 'DeviceProxy' -CaseSensitive -SimpleMatch)

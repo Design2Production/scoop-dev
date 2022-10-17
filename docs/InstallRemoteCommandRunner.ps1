@@ -1,6 +1,8 @@
 #Requires -RunAsAdministrator
 Set-PSDebug -Trace 0
 
+$repo = 'scoop-dev'
+
 Write-Output 'Downloading and installing RemoteCommandRunner'
 
 if ( $psversiontable.psversion.major -lt 3 )
@@ -237,7 +239,7 @@ if (!$gitInstalled)
     scoop install git
 }
 
-scoop bucket add scoop-dev https://github.com/Design2Production/scoop-dev.git
+scoop bucket add $repo https://github.com/Design2Production/$repo.git
 
 $sermanInstalled = $($installedApps | Select-String -Pattern 'serman' -CaseSensitive -SimpleMatch)
 $remoteCommandRunnerInstalled = $($installedApps | Select-String -Pattern 'RemoteCommandRunner' -CaseSensitive -SimpleMatch)

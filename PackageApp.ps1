@@ -1,4 +1,5 @@
 $application = $args[0]
+$repo = $args[1]
 
 Switch ($application)
 {
@@ -8,6 +9,16 @@ Switch ($application)
     {
         Write-Output 'applicaiton needs to be specified DeviceProxy | RemoteCommandRunner'
         exit 1
+    }
+}
+
+Switch ($repo)
+{
+    'scoop-dev' {}
+    'scoop' {}
+    default
+    {
+        Write-Output 'repo needs to be specified scoop | scoop-dev'
     }
 }
 
@@ -28,16 +39,16 @@ $fileHash = (Get-FileHash -Path .\docs\windows\dpems\$($application)_$version.zi
 # Create $application.json
 Set-Content -Path "$application.json" -Value "{
     `"version`": `"$version`",
-    `"url`": `"https://design2production.github.io/scoop-dev/windows/dpems/$($application)_$version.zip`",
+    `"url`": `"https://design2production.github.io/$repo/windows/dpems/$($application)_$version.zip`",
     `"extract_dir`": `"$application`",
     `"bin`": `"$application.exe`",
     `"hash`": `"$fileHash`",
     `"checkver`": {
-        `"url`": `"https://design2production.github.io/scoop-dev/$($application)Versions.json`",
+        `"url`": `"https://design2production.github.io/$repo/$($application)Versions.json`",
         `"jp`": `"$.versions[?(@.displayName == '$application - Latest')].version`"
     },
     `"autoupdate`": {
-        `"url`": `"https://design2production.github.io/scoop-dev/windows/dpems/$($application)_`$version.zip`"
+        `"url`": `"https://design2production.github.io/$repo/windows/dpems/$($application)_`$version.zip`"
     }
 }" -PassThru
 
@@ -66,7 +77,7 @@ foreach ($f in $applicationFiles)
     Add-Content -Path $outputFilename -Value "        {
             `"displayName`": `"$application$latestFileString`",
             `"version`": `"$fileVersion`",
-            `"url`": `"https://design2production.github.io/scoop-dev/windows/dpems/$($application)_$fileVersion.zip`",
+            `"url`": `"https://design2production.github.io/$repo/windows/dpems/$($application)_$fileVersion.zip`",
             `"hash`": `"$fileHash`",
             `"releasedate`": `"$fileDate`"
         }$comma" -PassThru
