@@ -399,15 +399,15 @@ if ($oldInstallationFolder -eq 'new')
 {
     #eco settings files from applicaiton and open for editing
     "{
-        `"port`": `"COM2`",
-        `"daughterBoardPort`": `"COM3`",
-        `"deviceAddress`": `"$deviceAddress`",
-        `"deviceId`": `"$deviceId`",
-        `"LcdTurnOnSchedule`": `"`",
-        `"LcdTurnOffSchedule`": `"`",
-        `"DeviceInfoPollerScheduler`": `"* * * * *`",
-        `"enableRemoteCommand`": `"true`"
-      }" | Out-File -FilePath C:\ProgramData\DP\DeviceProxy\setting.json
+    `"port`": `"COM2`",
+    `"daughterBoardPort`": `"COM3`",
+    `"deviceAddress`": `"$deviceAddress`",
+    `"deviceId`": `"$deviceId`",
+    `"LcdTurnOnSchedule`": `"`",
+    `"LcdTurnOffSchedule`": `"`",
+    `"DeviceInfoPollerScheduler`": `"* * * * *`",
+    `"enableRemoteCommand`": `"true`"
+}" | Out-File -FilePath C:\ProgramData\DP\DeviceProxy\setting.json
     Copy-Item "$deviceProxyDirectory\data.json" -Destination 'C:\ProgramData\DP\DeviceProxy\data\data.json'
 }
 else
