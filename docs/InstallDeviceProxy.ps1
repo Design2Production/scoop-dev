@@ -1,4 +1,4 @@
-###Requires -RunAsAdministrator
+#Requires -RunAsAdministrator
 Set-PSDebug -Trace 0
 
 Function SerialDisableDPEMSWatchDog
