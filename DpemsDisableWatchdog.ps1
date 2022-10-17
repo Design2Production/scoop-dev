@@ -11,9 +11,8 @@ $body = @{
 } | ConvertTo-Json
    
 $header = @{
-    'Accept'          = 'application/json'
-    'connectapitoken' = '97fe6ab5b1a640909551e36a071ce9ed'
-    'Content-Type'    = 'application/json'
+    'Accept'       = 'application/json'
+    'Content-Type' = 'application/json'
 } 
    
 Invoke-RestMethod -Uri "$postCommand" -Method 'Post' -Body $body -Headers $header | ConvertTo-Html
