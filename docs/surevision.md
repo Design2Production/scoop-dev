@@ -16,9 +16,7 @@
     2. On both PCs, connect the longer Ethernet cables from the PCs to the swith to the left most port (when looking from the front of the PC)
 
     ### For Outdoor Units
-    1. On the main PC, connect the short Etherbet cable to the DPEMS to the left more port (when looking from the front of the PC)
-    2. On the main PC, connect the longer Ethernet cable from the PC to the swith to the right most port (when looking from the front of the PC)
-    3. On the second PC, connect the longer Ethernet cable from the PC to the swith to the left most port (when looking from the front of the PC)
+    1. The outdoor installation proceedure is still being finalized.
 
 3. Start Powershell as Administrator
     1. Press the **Windows** key
