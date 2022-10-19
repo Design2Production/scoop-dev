@@ -426,7 +426,7 @@ if ($oldInstallationFolder -eq 'new')
     `"LcdTurnOnSchedule`": `"`",
     `"LcdTurnOffSchedule`": `"`",
     `"DeviceInfoPollerScheduler`": `"* * * * *`",
-    `"enableRemoteCommand`": `"true`"
+    `"enableRemoteCommand`": `"true`",
     `"secondPcIpAddress`": `"$secondPcIpAddress`"
 }" | Out-File -FilePath C:\ProgramData\DP\DeviceProxy\setting.json
     Copy-Item "$deviceProxyDirectory\data.json" -Destination 'C:\ProgramData\DP\DeviceProxy\data\data.json'
