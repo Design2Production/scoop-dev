@@ -4,6 +4,8 @@
 
 [RemoteCommandRunner Installation for Double Sided Units](#remotecommandrunner-installation)
 
+[Notes on Cloning of PCs](#notes-on-cloning-of-pcs)
+
 # DeviceProxy Installation
 
 ## Pre Installation
@@ -132,3 +134,26 @@ rm ./InstallRemoteCommandRunner.ps1
 <pre>
 rm -r <b>OldInstallationFolder</b>
 </pre>
+
+# Notes on cloning of PCs
+
+You can follow this installation proceedure for your main and secondard PCs and then clone the images for faster production deployment, however, the ***deviceID*** filed will then be the same on the new images.
+
+After cloning, the ***C:\ProgramData\DP\DeviceProxy\setting.json*** file must be edited and the ***deviceId*** field must be made unique.
+
+The contents of the file will look like the following:
+<pre>
+{
+  "port": "COM6",
+  "daughterBoardPort": "COM7"
+  "deviceAddress": "http://10.10.10.3:8000",
+  "deviceId": "UNIQUE-DEVICE-ID",
+  "LcdTurnOnSchedule": "",
+  "LcdTurnOffSchedule": "",
+  "DeviceInfoPollerScheduler": "* * * * *",
+  "enableRemoteCommand": "true",
+  "secondPcIpAddress": "192.168.0.200",
+}
+</pre>
+
+Please ensure you don't accidentally remove or change any punctuation. Only change the value of the deviceId inside the double quotes "UNIQUE-DEVICE-ID".
