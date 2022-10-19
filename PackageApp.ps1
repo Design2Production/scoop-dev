@@ -1,5 +1,5 @@
 $application = $args[0]
-$repo = $args[1]
+$repo = 'scoop-dev'
 
 Switch ($application)
 {
