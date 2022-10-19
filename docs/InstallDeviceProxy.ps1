@@ -57,7 +57,9 @@ $oldInstallationFolder = $args[1]
 $installationType = $args[2]
 $deviceId = $args[3]
 $hardware = $args[4]
-$deviceAddress = $args[5]
+$secondPcIpAddress = $args[5]
+
+$deviceAddress = 'http://10.10.10.3:8000'
 
 Switch ($server)
 {
@@ -145,24 +147,33 @@ Switch ($hardware)
     'DPEMS-V1'
     {
         SerialDisableDPEMSWatchDog
+        $secondPcIpAddress = '192.168.64.2'
     }
     'DPEMS-V1_DBV2'
     {
         SerialDisableDPEMSWatchDog
+        $secondPcIpAddress = '192.168.64.2'
     }
     'DPEMS-V1_DBV3'
     {
         SerialDisableDPEMSWatchDog
+        $secondPcIpAddress = '192.168.64.2'
     }
     'DPEMS-V1_FANEXT' 
     {
         SerialDisableDPEMSWatchDog
+        $secondPcIpAddress = '192.168.64.2'
     }
     'DPEMS-V2'
     {
         if (!$deviceAddress)
         {
-            Write-Output 'Device Address must be specified - eg: http://192.168.0.28:8000'
+            Write-Output 'Device Address must be specified - eg: http://10.10.10.3:8000'
+            exit
+        }
+        if (!$secondPcIpAddress)
+        {
+            Write-Output 'Second Pc Ip Address must be specified - eg: 10.1.10.101'
             exit
         }
         NetworkDisableDPEMSWatchDog
@@ -209,7 +220,14 @@ else
 # Set up the IP Address for the secondard Ethernet port for a Dual PC setup
 if ($installationType -eq 'dualPC')
 {
-    $newIPAddress = '192.168.64.1'
+    if ($hardware -eq 'DPEMS-V2')
+    {
+        $newIPAddress = '10.10.10.1'
+    }
+    else
+    {
+        $newIPAddress = '192.168.64.1'
+    }
     $newSubnetMask = '255.255.255.0'
     $physicalAdapters = Get-NetAdapter -Physical | Where-Object { $_.PhysicalMediaType -eq '802.3' }
     $manualAdapter = $null
@@ -409,6 +427,7 @@ if ($oldInstallationFolder -eq 'new')
     `"LcdTurnOffSchedule`": `"`",
     `"DeviceInfoPollerScheduler`": `"* * * * *`",
     `"enableRemoteCommand`": `"true`"
+    `"secondPcIpAddress`": `"$secondPcIpAddress`"
 }" | Out-File -FilePath C:\ProgramData\DP\DeviceProxy\setting.json
     Copy-Item "$deviceProxyDirectory\data.json" -Destination 'C:\ProgramData\DP\DeviceProxy\data\data.json'
 }
