@@ -446,9 +446,9 @@ if ($taskExists)
 {
     Unregister-ScheduledTask -TaskName "$taskName" -Confirm:$false 2>$null
 }
-$action = New-ScheduledTaskAction -Execute 'C:\scoop\apps\DeviceProxy\current\DPUpdateDeviceProxy.ps1'
+$action = New-ScheduledTaskAction -Execute 'powershell' -Argument 'C:\scoop\apps\DeviceProxy\current\DPUpdateDeviceProxy.ps1'
 $trigger = New-ScheduledTaskTrigger -Daily -At 3am
-$principal = New-ScheduledTaskPrincipal -UserId 'NT AUTHORITY\SYSTEM' -LogonType ServiceAccount -RunLevel Highest
+$principal = New-ScheduledTaskPrincipal -UserId "$($env:USERDOMAIN)\$($env:USERNAME)" -LogonType S4U -RunLevel Highest
 $settings = New-ScheduledTaskSettingsSet -MultipleInstances Parallel
 Register-ScheduledTask -TaskName $taskName -TaskPath '\DP\' -Action $action -Trigger $trigger -Settings $settings -Principal $principal
 
