@@ -9,15 +9,41 @@ Function SerialDisableDPEMSWatchDog
     # The Proxy will enable the watchdog when it starts running
 
     $serialPortNames = [System.IO.Ports.SerialPort]::getportnames()
+    $watchDogDisabled = $false
+    
     foreach ($serialPortName in $serialPortNames)
     {
-        Write-Output "Open Port: $serialPortName"
-        $port = New-Object System.IO.Ports.SerialPort $serialPortName,9600,None,8,one
-        $port.Open()
-        Write-Output 'Send Serial Watchdog Disable'
-        $port.Write('e0')
-        $port.Close()
-        Write-Output "Close Port: $serialPortName"
+        for ($i = 0; $i -lt 3; $i++)
+        {
+            try
+            {
+                Write-Output "Try Disable Watchdog on Port: $serialPortName"
+                $port = New-Object System.IO.Ports.SerialPort $serialPortName,9600,None,8,one
+                $port.ReadTimeout = 1000
+                $port.Open()
+                $port.Write('e0')
+                $reply = $port.ReadLine()
+                Write-Output "reply: $reply"
+                if ($reply.Contains('!:e0'))
+                {
+                    Write-Output 'Watchdog Disabled'
+                    $watchDogDisabled = $true
+                    break;
+                }
+            }
+            catch
+            {
+                Write-Output "Stop WatchDog Exception:$_.Exception.Message"
+            }    
+            finally
+            {
+                $port.Close()
+            }    
+        }
+        if ($watchDogDisabled -eq $true)
+        {
+            break;
+        }
     }
 }
 
@@ -26,22 +52,30 @@ Function NetworkDisableDPEMSWatchDog
     # Disable the DPEMS watchdog using a network call so we don't get killed part way through the installation
     # The Proxy will enable the watchdog when it starts running
 
-    $setting = Get-Content -Raw -Path C:\ProgramData\DP\DeviceProxy\setting.json | ConvertFrom-Json
-    $deviceAddress = $setting.deviceAddress
-    $postCommand = "$deviceAddress/setWatchDog"
+    try
+    {
+        # disable the watchdog - both network and serial
+        # the proxy will reenable it once it runs
+        $setting = Get-Content -Raw -Path C:\ProgramData\DP\DeviceProxy\setting.json | ConvertFrom-Json
+        $deviceAddress = $setting.deviceAddress
+        $postCommand = "$deviceAddress/setWatchDog"
+        Write-Output $postCommand
 
-    Write-Output $postCommand
-
-    $body = @{
-        'status' = 'false'
-    } | ConvertTo-Json
+        $body = @{
+            'status' = 'false'
+        } | ConvertTo-Json
     
-    $header = @{
-        'Accept'       = 'application/json'
-        'Content-Type' = 'application/json'
-    } 
-    
-    Invoke-RestMethod -Uri "$postCommand" -Method 'Post' -Body $body -Headers $header | ConvertTo-Html | Out-Null
+        $header = @{
+            'Accept'       = 'application/json'
+            'Content-Type' = 'application/json'
+        }
+   
+        Invoke-RestMethod -Uri "$postCommand" -Method 'Post' -Body $body -Headers $header | ConvertTo-Html | Out-Null
+    }
+    catch
+    {
+        Write-Output "Stop WatchDog Exception:$_.Exception.Message"
+    }    
 }
 
 Write-Output 'Downloading and installing DeviceProxy'
