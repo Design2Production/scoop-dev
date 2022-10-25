@@ -205,6 +205,7 @@ Switch ($hardware)
             Write-Output 'Device Address must be specified - eg: http://10.10.10.3:8000'
             exit
         }
+        $secondPcIpAddress = $deviceAddress
         if (!$secondPcIpAddress)
         {
             Write-Output 'Second Pc Ip Address must be specified - eg: 10.1.10.101'
