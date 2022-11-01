@@ -56,9 +56,9 @@ set-executionpolicy remotesigned -scope currentuser
 </pre>
 
 3. Run the install script with the appropraite installation parameters. Here are 3 examples:
-    1. <pre>.\InstallDeviceProxy.ps1 Production new singlePC Surevision-Indoor-002 DPEMS-V1_DBV2</pre>
-    2. <pre>.\InstallDeviceProxy.ps1 Production new dualPC Surevision-Indoor-002 DPEMS-V1_DBV2</pre>
-    3. <pre>.\InstallDeviceProxy.ps1 Production new dualPC Surevision-Outdoor-002 DPEMS-V2 10.1.10.101</pre>
+    1. <pre>.\InstallDeviceProxy.ps1 Production new singlePC Surevision-Indoor-002 DPEMS-V1_DBV3</pre>
+    2. <pre>.\InstallDeviceProxy.ps1 Production new dualPC Surevision-Indoor-002 DPEMS-V1_DBV3</pre>
+    3. <pre>.\InstallDeviceProxy.ps1 Production new dualPC Surevision-Outdoor-002 DPEMS-V3 10.1.10.101</pre>
 The arguments are as follows:
    1. <pre>Production = which server to use: Staging | Production</pre>
    2. <pre>new = old installation folder: new | old Installation Folder</pre>
