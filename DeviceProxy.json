@@ -1,9 +1,9 @@
 {
-    "version": "1.7.5.10",
-    "url": "https://design2production.github.io/scoop-dev/windows/dpems/DeviceProxy_1.7.5.10.zip",
+    "version": "1.7.5.11",
+    "url": "https://design2production.github.io/scoop-dev/windows/dpems/DeviceProxy_1.7.5.11.zip",
     "extract_dir": "DeviceProxy",
     "bin": "DeviceProxy.exe",
-    "hash": "5C43654C942AF4F7E9AF784BA64E75B98334F2D09A06F6AC321FE62BE2B33458",
+    "hash": "486C42538C676A7720AEA156FAE748D1E722B6B1FF670B5C32C759AFCE6CC887",
     "checkver": {
         "url": "https://design2production.github.io/scoop-dev/DeviceProxyVersions.json",
         "jp": "$.versions[?(@.displayName == 'DeviceProxy - Latest')].version"
