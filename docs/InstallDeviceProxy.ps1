@@ -93,7 +93,7 @@ $deviceId = $args[3]
 $hardware = $args[4]
 $secondPcIpAddress = $args[5]
 
-$deviceAddress = 'http://192.168.64.3:8000'
+$deviceAddress = 'http://10.10.10.3:8000'
 
 Switch ($server)
 {
