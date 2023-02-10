@@ -5,175 +5,175 @@
             "version": "1.7.5.4",
             "url": "https://design2production.github.io/scoop-dev/windows/dpems/DeviceProxy_1.7.5.4.zip",
             "hash": "5AF55D951AD148D2A903B9FAFE1F5E404F86C1696EABBA38065F674AF1A1868E",
-            "releasedate": "2022-10-21T12:09:22:632Z"
+            "releasedate": "2023-02-10T03:35:38:530Z"
         },
         {
             "displayName": "DeviceProxy",
             "version": "1.7.5.3",
             "url": "https://design2production.github.io/scoop-dev/windows/dpems/DeviceProxy_1.7.5.3.zip",
             "hash": "893105EDCB5EE3175E315E11D062B61610E0BE5DECF0E359C6846D74712F78FE",
-            "releasedate": "2022-10-21T12:07:16:025Z"
+            "releasedate": "2023-02-10T03:35:38:303Z"
         },
         {
             "displayName": "DeviceProxy",
             "version": "1.7.5.25",
             "url": "https://design2production.github.io/scoop-dev/windows/dpems/DeviceProxy_1.7.5.25.zip",
-            "hash": "4FC931ED929F883F847FEE1C74E01D59950C97110ACC04DDE1C4E3219C96D418",
-            "releasedate": "2023-02-09T12:04:09:284Z"
+            "hash": "2E6400966742854FA698A4574BA742C825A6B8A072287968B2DD81F8D818C64E",
+            "releasedate": "2023-02-10T03:35:38:174Z"
         },
         {
             "displayName": "DeviceProxy",
             "version": "1.7.5.2",
             "url": "https://design2production.github.io/scoop-dev/windows/dpems/DeviceProxy_1.7.5.2.zip",
             "hash": "D663744ED1C9C98B3610AC5592B87643D41DB83C424CB7A9689E1B63A8C1E277",
-            "releasedate": "2022-10-20T06:50:15:682Z"
+            "releasedate": "2023-02-10T03:35:37:824Z"
         },
         {
             "displayName": "DeviceProxy",
             "version": "1.7.5.13",
             "url": "https://design2production.github.io/scoop-dev/windows/dpems/DeviceProxy_1.7.5.13.zip",
             "hash": "05116F1D0099E47ABD489E6D5915687F4B77354405683CC657BA4953607AC76B",
-            "releasedate": "2022-11-17T02:47:27:020Z"
+            "releasedate": "2023-02-10T03:35:37:545Z"
         },
         {
             "displayName": "DeviceProxy",
             "version": "1.7.5.12",
             "url": "https://design2production.github.io/scoop-dev/windows/dpems/DeviceProxy_1.7.5.12.zip",
             "hash": "D448EB21F7359AC49B0494E14DD709CF54611A8A85FBB196F906F8F8DA4A4DE8",
-            "releasedate": "2022-11-16T10:30:53:548Z"
+            "releasedate": "2023-02-10T03:35:37:209Z"
         },
         {
             "displayName": "DeviceProxy",
             "version": "1.7.5.11",
             "url": "https://design2production.github.io/scoop-dev/windows/dpems/DeviceProxy_1.7.5.11.zip",
             "hash": "486C42538C676A7720AEA156FAE748D1E722B6B1FF670B5C32C759AFCE6CC887",
-            "releasedate": "2022-11-16T06:47:01:378Z"
+            "releasedate": "2023-02-10T03:35:36:898Z"
         },
         {
             "displayName": "DeviceProxy",
             "version": "1.7.5.10",
             "url": "https://design2production.github.io/scoop-dev/windows/dpems/DeviceProxy_1.7.5.10.zip",
             "hash": "5C43654C942AF4F7E9AF784BA64E75B98334F2D09A06F6AC321FE62BE2B33458",
-            "releasedate": "2022-11-04T02:50:14:500Z"
+            "releasedate": "2023-02-10T03:35:36:675Z"
         },
         {
             "displayName": "DeviceProxy",
             "version": "1.7.5.1",
             "url": "https://design2production.github.io/scoop-dev/windows/dpems/DeviceProxy_1.7.5.1.zip",
             "hash": "6C95B1FAD35A9D5C1FFD28BF92DE4C24A3050C42FBB5ABD3300F960489FFA088",
-            "releasedate": "2022-10-19T03:04:20:527Z"
+            "releasedate": "2023-02-10T03:35:36:549Z"
         },
         {
             "displayName": "DeviceProxy",
             "version": "1.7.4.8",
             "url": "https://design2production.github.io/scoop-dev/windows/dpems/DeviceProxy_1.7.4.8.zip",
             "hash": "777FECF692B91DC40B0A86432ACFA803166EDB4D64BE5E5D49C6C4ABA6E070D0",
-            "releasedate": "2022-08-30T01:43:25:166Z"
+            "releasedate": "2023-02-10T03:35:36:414Z"
         },
         {
             "displayName": "DeviceProxy",
             "version": "1.7.4.7",
             "url": "https://design2production.github.io/scoop-dev/windows/dpems/DeviceProxy_1.7.4.7.zip",
             "hash": "EA4054E133C97C260ECC420097882EA10810EE03D8B9302634A5C67E33D27EEA",
-            "releasedate": "2022-08-29T11:48:20:017Z"
+            "releasedate": "2023-02-10T03:35:36:261Z"
         },
         {
             "displayName": "DeviceProxy",
             "version": "1.7.4.6",
             "url": "https://design2production.github.io/scoop-dev/windows/dpems/DeviceProxy_1.7.4.6.zip",
             "hash": "8A1A5E60C0A309A24C225E5EF32D582B66798B707C1A1600E41742510865EA3F",
-            "releasedate": "2022-08-25T07:32:35:418Z"
+            "releasedate": "2023-02-10T03:35:36:071Z"
         },
         {
             "displayName": "DeviceProxy",
             "version": "1.7.4.5",
             "url": "https://design2production.github.io/scoop-dev/windows/dpems/DeviceProxy_1.7.4.5.zip",
             "hash": "5B445D2CBB7B839B02AB277E7150D76C5475C9E23160A22ADBEF59840D940F21",
-            "releasedate": "2022-08-23T06:34:23:053Z"
+            "releasedate": "2023-02-10T03:35:35:838Z"
         },
         {
             "displayName": "DeviceProxy",
             "version": "1.7.4.4",
             "url": "https://design2production.github.io/scoop-dev/windows/dpems/DeviceProxy_1.7.4.4.zip",
             "hash": "54C01A4D673750259C51C9A7FAD1612B522C6B574E6698018C56C09946DEB87E",
-            "releasedate": "2022-08-23T05:48:55:166Z"
+            "releasedate": "2023-02-10T03:35:35:640Z"
         },
         {
             "displayName": "DeviceProxy",
             "version": "1.7.4.3",
             "url": "https://design2production.github.io/scoop-dev/windows/dpems/DeviceProxy_1.7.4.3.zip",
             "hash": "E1B84F999BC0013F82E0B40A1AE110293526BD3EFFBA1987B0E0C576911B0C32",
-            "releasedate": "2022-08-22T05:23:55:781Z"
+            "releasedate": "2023-02-10T03:35:35:390Z"
         },
         {
             "displayName": "DeviceProxy",
             "version": "1.7.4.20",
             "url": "https://design2production.github.io/scoop-dev/windows/dpems/DeviceProxy_1.7.4.20.zip",
             "hash": "8304F4D88196B96DD04FFA581ECE32007068E271CFC2B592433C57C3197F6A8A",
-            "releasedate": "2022-10-19T01:04:11:736Z"
+            "releasedate": "2023-02-10T03:35:35:212Z"
         },
         {
             "displayName": "DeviceProxy",
             "version": "1.7.4.2",
             "url": "https://design2production.github.io/scoop-dev/windows/dpems/DeviceProxy_1.7.4.2.zip",
             "hash": "D611EB9602DE596185FC6EF209C10139C00DFE35CBF934988C521569B393DD4C",
-            "releasedate": "2022-08-16T06:39:53:567Z"
+            "releasedate": "2023-02-10T03:35:35:090Z"
         },
         {
             "displayName": "DeviceProxy",
             "version": "1.7.4.19",
             "url": "https://design2production.github.io/scoop-dev/windows/dpems/DeviceProxy_1.7.4.19.zip",
             "hash": "97690F967AA2F9B913F6359A1AF7A1A23990283D772869A4DD2FC93BEC99615A",
-            "releasedate": "2022-10-17T06:27:59:493Z"
+            "releasedate": "2023-02-10T03:35:34:943Z"
         },
         {
             "displayName": "DeviceProxy",
             "version": "1.7.4.18",
             "url": "https://design2production.github.io/scoop-dev/windows/dpems/DeviceProxy_1.7.4.18.zip",
             "hash": "476C8FFF194A406B125E3CAF622662E57CD68B33E4CA5C2AE0CA812BC58CE33E",
-            "releasedate": "2022-10-17T02:56:07:952Z"
+            "releasedate": "2023-02-10T03:35:34:795Z"
         },
         {
             "displayName": "DeviceProxy",
             "version": "1.7.4.17",
             "url": "https://design2production.github.io/scoop-dev/windows/dpems/DeviceProxy_1.7.4.17.zip",
             "hash": "C9DB069EC9B4390DCAE04E82D6FCAAAE922116E9EBA66EBF987F49D7585A1207",
-            "releasedate": "2022-10-13T12:16:16:410Z"
+            "releasedate": "2023-02-10T03:35:34:577Z"
         },
         {
             "displayName": "DeviceProxy",
             "version": "1.7.4.16",
             "url": "https://design2production.github.io/scoop-dev/windows/dpems/DeviceProxy_1.7.4.16.zip",
             "hash": "2353B83742AC3E04F3387672957E1A12A05ABA4DE42A99D79EFCCAD71CA723C7",
-            "releasedate": "2022-10-13T12:19:19:406Z"
+            "releasedate": "2023-02-10T03:35:34:367Z"
         },
         {
             "displayName": "DeviceProxy",
             "version": "1.7.4.15",
             "url": "https://design2production.github.io/scoop-dev/windows/dpems/DeviceProxy_1.7.4.15.zip",
             "hash": "5F043B2F1EE8C1E0C1E6AA83F8F16F2568187E9B53C94E6188A91E5005720269",
-            "releasedate": "2022-10-07T05:57:40:017Z"
+            "releasedate": "2023-02-10T03:35:34:165Z"
         },
         {
             "displayName": "DeviceProxy",
             "version": "1.7.4.14",
             "url": "https://design2production.github.io/scoop-dev/windows/dpems/DeviceProxy_1.7.4.14.zip",
             "hash": "5DE1D856DC0DAD4F3578AC85EDB90CDE55980D16BD6B585003E006924951998E",
-            "releasedate": "2022-10-07T03:37:47:042Z"
+            "releasedate": "2023-02-10T03:35:33:975Z"
         },
         {
             "displayName": "DeviceProxy",
             "version": "1.7.4.13",
             "url": "https://design2production.github.io/scoop-dev/windows/dpems/DeviceProxy_1.7.4.13.zip",
             "hash": "371FB85F9E11434563B61A6C21D17F6C2CAD5809FF2DDDCA4C14DB22CF68D934",
-            "releasedate": "2022-10-05T10:46:00:999Z"
+            "releasedate": "2023-02-10T03:35:33:792Z"
         },
         {
             "displayName": "DeviceProxy",
             "version": "1.7.4.1",
             "url": "https://design2production.github.io/scoop-dev/windows/dpems/DeviceProxy_1.7.4.1.zip",
             "hash": "495841110624683B8D9F6A2F63D25A10D54E06EB4B9ED845DE30E2754DA7DA11",
-            "releasedate": "2022-08-17T01:21:13:717Z"
+            "releasedate": "2023-02-10T03:35:33:566Z"
         }
     ]
 }
