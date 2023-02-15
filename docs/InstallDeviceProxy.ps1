@@ -203,7 +203,6 @@ Switch ($hardware)
         Write-Output 'The installer script needs updating'
         # Fix primary IP address to that of the router - in the last case it was 10.1.10.100 for PCA and 10.1.10.101 for PCB
         # Fix device IP address to be the same as shooper 192.168.64.3:8000 and the second PC port to be 192.168.64.1
-        exit
         if (!$deviceAddress)
         {
             Write-Output 'Device Address must be specified - eg: http://10.10.10.3:8000'
