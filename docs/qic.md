@@ -20,7 +20,7 @@
 
 1. Download the install script
 <pre>
-Invoke-WebRequest -Uri https://design2production.github.io/scoop-dev/InstallDeviceProxy.ps1 -OutFile InstallDeviceProxy.ps1
+Invoke-WebRequest -Uri https://design2production.github.io/scoop/InstallDeviceProxy.ps1 -OutFile InstallDeviceProxy.ps1
 </pre>
 
 If the installation script fails with ***Invoke-WebRequest : The request was aborted: Could not create SSL/TLS secure channel*** then enter the following command and retry the Web-Request
@@ -55,7 +55,7 @@ rm ./InstallDeviceProxy.ps1
 
 1. Download the uninstall script
 <pre>
-Invoke-WebRequest -Uri https://design2production.github.io/scoop-dev/UnInstallDeviceProxy.ps1 -OutFile UnInstallDeviceProxy.ps1
+Invoke-WebRequest -Uri https://design2production.github.io/scoop/UnInstallDeviceProxy.ps1 -OutFile UnInstallDeviceProxy.ps1
 </pre>
 
 If the installation script fails with ***Invoke-WebRequest : The request was aborted: Could not create SSL/TLS secure channel*** then enter the following command and retry the Web-Request
