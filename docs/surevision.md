@@ -38,6 +38,10 @@ Please follow this guide if you want to uninstall a scoop based device proxy fro
 
 [Uninstalling the "scoop" based Device Proxy](https://design2production.github.io/scoop-dev/uninstall-proxy.html)
 
+Please follow this guide if you want to uninstall a scoop based remote command runner from a PC
+
+[Uninstalling the "scoop" based Remote Command Runner](https://design2production.github.io/scoop-dev/uninstall-remotecommandrunner.html)
+
 Please refer to these notes if you would like to clone an existing scoop based Device Proxy installtion to multiple PCs.
 
 [PC Cloning Notes](https://design2production.github.io/scoop-dev/pc-cloning-notes-surevision.html)
