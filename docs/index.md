@@ -1,4 +1,4 @@
-# DP Windows Installation
+# DP Windows Installation Guides
 
 ## WINDOWS DEVELOPMENT SERVER - DO NOT DEPLOY TO THIS IN PRODUCTION
 

@@ -424,6 +424,7 @@ $deviceProxyDirectory = $(scoop prefix DeviceProxy)
     `"enableRemoteCommand`": `"true`",
     `"secondPcIpAddress`": `"$secondPcIpAddress`"
 }" | Out-File -FilePath C:\ProgramData\DP\DeviceProxy\setting.json
+Copy-Item 'C:\ProgramData\DP\DeviceProxy\setting.json' -Destination 'C:\ProgramData\DP\DeviceProxy\setting-backup.json' -Force
 Copy-Item "$deviceProxyDirectory\data.json" -Destination 'C:\ProgramData\DP\DeviceProxy\data\data.json'
 
 # Add auto update to scheduler

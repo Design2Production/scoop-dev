@@ -2,83 +2,9 @@
 Set-PSDebug -Trace 0
 
 $repo = 'scoop-dev'
+$dpemsType = $args[0]
 
-Function SerialDisableDPEMSWatchDog
-{
-    # Disable the DPEMS watchdog using a network call so we don't get killed part way through the installation
-    # The Proxy will enable the watchdog when it starts running
-
-    $serialPortNames = [System.IO.Ports.SerialPort]::getportnames()
-    $watchDogDisabled = $false
-    
-    foreach ($serialPortName in $serialPortNames)
-    {
-        for ($i = 0; $i -lt 3; $i++)
-        {
-            try
-            {
-                Write-Output "Try Disable Watchdog on Port: $serialPortName"
-                $port = New-Object System.IO.Ports.SerialPort $serialPortName,9600,None,8,one
-                $port.ReadTimeout = 1000
-                $port.Open()
-                $port.Write('e0')
-                $reply = $port.ReadLine()
-                Write-Output "reply: $reply"
-                if ($reply.Contains('!:e0'))
-                {
-                    Write-Output 'Watchdog Disabled'
-                    $watchDogDisabled = $true
-                    break;
-                }
-            }
-            catch
-            {
-                Write-Output "Stop WatchDog Exception:$_.Exception.Message"
-            }    
-            finally
-            {
-                $port.Close()
-            }    
-        }
-        if ($watchDogDisabled -eq $true)
-        {
-            break;
-        }
-    }
-}
-
-Function NetworkDisableDPEMSWatchDog
-{
-    # Disable the DPEMS watchdog using a network call so we don't get killed part way through the installation
-    # The Proxy will enable the watchdog when it starts running
-
-    try
-    {
-        # disable the watchdog - both network and serial
-        # the proxy will reenable it once it runs
-        $setting = Get-Content -Raw -Path C:\ProgramData\DP\DeviceProxy\setting.json | ConvertFrom-Json
-        $deviceAddress = $setting.deviceAddress
-        $postCommand = "$deviceAddress/setWatchDog"
-        Write-Output $postCommand
-
-        $body = @{
-            'status' = 'false'
-        } | ConvertTo-Json
-    
-        $header = @{
-            'Accept'       = 'application/json'
-            'Content-Type' = 'application/json'
-        }
-   
-        Invoke-RestMethod -Uri "$postCommand" -Method 'Post' -Body $body -Headers $header | ConvertTo-Html | Out-Null
-    }
-    catch
-    {
-        Write-Output "Stop WatchDog Exception:$_.Exception.Message"
-    }    
-}
-
-Write-Output 'Downloading and installing DeviceProxy'
+Write-Output 'Downloading and installing RemoteCommandRunner'
 
 if ( $psversiontable.psversion.major -lt 3 )
 {
@@ -86,140 +12,16 @@ if ( $psversiontable.psversion.major -lt 3 )
     exit 1
 }
 
-$server = $args[0]
-$oldInstallationFolder = $args[1]
-$installationType = $args[2]
-$secondPcIpAddress = $args[3]
-
-Switch ($server)
+Switch ($dpemsType)
 {
-    'Staging' {}
-    'Production' {}
+    'DPEMS-V1' {}
+    'DPEMS-V2' {}
     default
     {
-        Write-Output 'server needs to be specified Production | Staging'
+        Write-Output 'DPEMS Type must be specified DPEMS-V1 | DPEMS-V2'
         exit 1
     }
 }
-$server = 'Windows' + $server
-
-if (!$oldInstallationFolder)
-{
-    Write-Output 'Old installation folder must be specified'
-    exit
-}
-
-Switch ($installationType)
-{
-    'singlePC' {}
-    'dualPC' {}
-    default
-    {
-        Write-Output 'Installation Type must be specified singlePC | dualPC'
-        exit 1
-    }
-}
-
-$settingFile = "$oldInstallationFolder\conf\setting.json"
-$dataFile = "$oldInstallationFolder\data\data.json"
-if ($(Test-Path -Path $settingFile) -ne $true)
-{
-    Write-Output "setting.json does not exist in old Installation folder $settingFile"
-    exit
-}
-if ($(Test-Path -Path $dataFile) -ne $true)
-{
-    Write-Output "data.json does not exist in old Installation folder $oldInstallationFolder\..\data\data.json"
-    exit
-}
-$settingFileJson = Get-Content "$oldInstallationFolder\conf\setting.json" -Raw | ConvertFrom-Json
-$deviceId = $settingFileJson.deviceId
-$deviceAddress = $settingFileJson.deviceAddress
-
-$appsettingsJson = Get-Content "$oldInstallationFolder\bin\appsettings.json" -Raw | ConvertFrom-Json
-if ($appsettingsJson.deviceMode -eq 'http')
-{
-    Write-Output 'device mode found: http' 
-    $hardware = 'DPEMS-V2'
-}
-elseif ($appsettingsJson.deviceMode -eq 'serial')
-{
-    Write-Output 'device mode found: serial' 
-    if ($appsettingsJson.DaughterBoardType -eq 'V2')
-    {
-        Write-Output 'daughterboard found: V2' 
-        $hardware = 'DPEMS-V1_DBV2'
-    }
-    elseif ($appsettingsJson.DaughterBoardType -eq 'V3')
-    {
-        Write-Output 'daughterboard found: V3' 
-        $hardware = 'DPEMS-V1_DBV3'
-    }
-    else
-    {
-        Write-Output 'DaughterBoardType not found in appsettings.json' 
-        exit
-    }
-}
-else 
-{
-    Write-Output 'deviceMode not found in appsettings.json' 
-    exit
-}
-
-if (!$deviceId)
-{
-    Write-Output 'Device Id Not found in setting.json'
-    exit 1
-}
-
-Switch ($hardware)
-{
-    'DPEMS-V1'
-    {
-        SerialDisableDPEMSWatchDog
-        $secondPcIpAddress = '192.168.64.2'
-    }
-    'DPEMS-V1_DBV2'
-    {
-        SerialDisableDPEMSWatchDog
-        $secondPcIpAddress = '192.168.64.2'
-    }
-    'DPEMS-V1_DBV3'
-    {
-        SerialDisableDPEMSWatchDog
-        $secondPcIpAddress = '192.168.64.2'
-    }
-    'DPEMS-V1_FANEXT' 
-    {
-        SerialDisableDPEMSWatchDog
-        $secondPcIpAddress = '192.168.64.2'
-    }
-    'DPEMS-V2'
-    {
-        if (!$deviceAddress)
-        {
-            Write-Output 'Device Address not found in setting.json'
-            exit
-        }
-        else
-        {
-            Write-Output 'Device Address'$deviceAddress
-        }
-        if (!$secondPcIpAddress)
-        {
-            Write-Output 'Second Pc Ip Address must be specified - eg: 10.1.10.101'
-            exit
-        }
-        NetworkDisableDPEMSWatchDog
-    }
-    default
-    {
-        Write-Output 'hardware not found in appsetting.json'
-        exit 1
-    }
-}
-$environment = $server + '_' + $hardware
 
 # Open the firewall for pings
 $firewallRuleName = 'ICMP Allow incoming V4 echo request'
@@ -252,17 +54,41 @@ else
     }
 }
 
-# Set up the IP Address for the secondard Ethernet port for a Dual PC setup
-if ($installationType -eq 'dualPC')
+# Open the firewall for port 5002
+$firewallRuleName = 'TCP Port 5002'
+$firewallRule = Get-NetFirewallRule -DisplayName "$firewallRuleName" 2>$null
+if ($null -eq $firewallRule)
 {
-    if ($hardware -eq 'DPEMS-V2')
+    Write-Output "Adding Firewall Rule '$firewallRuleName' ..."
+    netsh advfirewall firewall add rule name="$firewallRuleName" dir=in action=allow protocol=TCP localport=5002
+}
+else
+{
+    if ($firewallRule.Enabled -eq 'True')
     {
-        $newIPAddress = '10.10.10.1'
+        Write-Output "Firewall Rule '$firewallRuleName' exists and is enabled."
     }
     else
     {
-        $newIPAddress = '192.168.64.1'
+        Write-Output "Firewall Rule '$firewallRuleName' exists but is disabled - Enabling now..."
+        Enable-NetFirewallRule -DisplayName $firewallRuleName
+        $firewallRule = Get-NetFirewallRule -DisplayName "$firewallRuleName" 2>$null
+        if ($firewallRule.Enabled -eq 'True')
+        {
+            Write-Output "Firewall Rule '$firewallRuleName' exists and is enabled."
+        }
+        else 
+        {
+            Write-Output "Firewall Rule '$firewallRuleName' exists but could not be enabled - please check and enable manually"
+            exit 1
+        }
     }
+}
+
+if ($dpemsType -eq 'DPEMS-V1')
+{
+    # Set up the IP Address for the secondard Ethernet port for the Dual PC setup for DPEMS-V1
+    $newIPAddress = '192.168.64.2'
     $newSubnetMask = '255.255.255.0'
     $physicalAdapters = Get-NetAdapter -Physical | Where-Object { $_.PhysicalMediaType -eq '802.3' }
     $manualAdapter = $null
@@ -404,14 +230,32 @@ if ($installationType -eq 'dualPC')
         }
     }
 }
+else
+{
+    $physicalAdapters = Get-NetAdapter -Physical | Where-Object { $_.PhysicalMediaType -eq '802.3' }
+    foreach ($physicalAdapter in $physicalAdapters)
+    {
+        $configurations = Get-NetIPAddress -InterfaceIndex $physicalAdapter.InterfaceIndex -AddressFamily IPv4
+        foreach ($configuration in $configurations)
+        {
+            Write-Output "Detected $($configuration.InterfaceAlias) $($configuration.PrefixOrigin) $($configuration.IPAddress) $($configuration.AddressState)"
+        }
+    }
+}
+
 
 Write-Output 'Remove old start.cmd file ...'
 Remove-Item C:\Users\SureVision\Desktop\start.cmd -Force 2>$null
-Write-Output 'Remove old RunNetworkProxy scehduled task...'
-Unregister-ScheduledTask -TaskName 'RunNetworkProxy' -Confirm:$false
-Write-Output 'Stop the DeviceProxy.exe process...'
-taskkill /IM DeviceProxy.exe /F
+
+Write-Output 'Remove old RunRemoteCommandRunner scehduled task...'
+Unregister-ScheduledTask -TaskName 'RunRemoteCommandRunner' -Confirm:$false
+
+Write-Output 'Stop the RemoveCommandRunner.exe process...'
+taskkill /IM RemoteCommandRunner.exe /F
+
+
 Write-Output 'Installing scoop...'
+
 $env:SCOOP = 'C:\scoop'
 [environment]::setEnvironmentVariable('SCOOP', $env:SCOOP, 'User')
 
@@ -423,8 +267,7 @@ catch
 {
     Write-Output 'Installing Scoop package management system...'
 
-    Invoke-Expression "& {$(Invoke-RestMethod get.scoop.sh)} -RunAsAdmin"
-    #Invoke-Expression (New-Object System.Net.WebClient).DownloadString('https://get.scoop.sh')
+    Invoke-Expression "& { $(Invoke-RestMethod get.scoop.sh) } -RunAsAdmin"
 }
 
 #create .gitconfig file - to allow sync over slow internet connections
@@ -452,78 +295,51 @@ if (!$gitInstalled)
 scoop bucket add $repo https://github.com/Design2Production/$repo.git
 
 $sermanInstalled = $($installedApps | Select-String -Pattern 'serman' -CaseSensitive -SimpleMatch)
-$deviceProxyInstalled = $($installedApps | Select-String -Pattern 'DeviceProxy' -CaseSensitive -SimpleMatch)
+$remoteCommandRunnerInstalled = $($installedApps | Select-String -Pattern 'RemoteCommandRunner' -CaseSensitive -SimpleMatch)
 if (!$sermanInstalled)
 {
     scoop install serman
 }
-if (!$deviceProxyInstalled)
+if (!$remoteCommandRunnerInstalled)
 {
-    scoop install DeviceProxy
+    scoop install RemoteCommandRunner
 }
 
-#create data folders
-Write-Output 'Create ProgramData directories...'
-New-Item -ItemType Directory -Force -Path C:\ProgramData\DP\DeviceProxy\cache\firmware | Out-Null
-New-Item -ItemType Directory -Force -Path C:\ProgramData\DP\DeviceProxy\data | Out-Null
-New-Item -ItemType Directory -Force -Path C:\ProgramData\DP\DeviceProxy\log | Out-Null
-
-Write-Output 'Copy data files...'
-$deviceProxyDirectory = $(scoop prefix DeviceProxy)
-#echo settings files from applicaiton and open for editing
-"{
-    `"port`": `"COM2`",
-    `"daughterBoardPort`": `"COM3`",
-    `"deviceAddress`": `"$deviceAddress`",
-    `"deviceId`": `"$deviceId`",
-    `"LcdTurnOnSchedule`": `"`",
-    `"LcdTurnOffSchedule`": `"`",
-    `"DeviceInfoPollerScheduler`": `"* * * * *`",
-    `"enableRemoteCommand`": `"true`",
-    `"secondPcIpAddress`": `"$secondPcIpAddress`"
-}" | Out-File -FilePath C:\ProgramData\DP\DeviceProxy\setting.json
-Copy-Item 'C:\ProgramData\DP\DeviceProxy\setting.json' -Destination 'C:\ProgramData\DP\DeviceProxy\setting-backup.json' -Force
-Copy-Item "$deviceProxyDirectory\data.json" -Destination 'C:\ProgramData\DP\DeviceProxy\data\data.json'
+$remoteCommandRunnerDirectory = $(scoop prefix RemoteCommandRunner)
 
 # Add auto update to scheduler
 Write-Output 'Add task for Autoupdate...'
-$taskName = 'DPUpdateDeviceProxy'
+$taskName = 'DPUpdateRemoteCommandRunner'
 $taskExists = Get-ScheduledTask | Where-Object { $_.TaskName -like $taskName }
 if ($taskExists)
 {
     Unregister-ScheduledTask -TaskName "$taskName" -Confirm:$false 2>$null
 }
-$action = New-ScheduledTaskAction -Execute 'powershell' -Argument 'C:\scoop\apps\DeviceProxy\current\DPUpdateDeviceProxy.ps1'
+$action = New-ScheduledTaskAction -Execute 'C:\scoop\apps\RemoteCommandRunner\current\DPUpdateRemoteCommandRunner.ps1'
 $trigger = New-ScheduledTaskTrigger -Daily -At 3am
-$principal = New-ScheduledTaskPrincipal -UserId "$($env:USERDOMAIN)\$($env:USERNAME)" -LogonType S4U -RunLevel Highest
+$principal = New-ScheduledTaskPrincipal -UserId 'NT AUTHORITY\SYSTEM' -LogonType ServiceAccount -RunLevel Highest
 $settings = New-ScheduledTaskSettingsSet -MultipleInstances Parallel
 Register-ScheduledTask -TaskName $taskName -TaskPath '\DP\' -Action $action -Trigger $trigger -Settings $settings -Principal $principal
 
-# Add DeviceProxy as Windows Service
-$deviceProxyXml = $deviceProxyDirectory + '\DeviceProxy.xml'
-Write-Output 'Stop DeviceProxy Service...'
-Stop-Service DeviceProxy 2>$null
+# Add RemoteCommandRunner as Windows Service
+$remoteCommandRunnerXml = $remoteCommandRunnerDirectory + '\RemoteCommandRunner.xml'
+Write-Output 'Stop RemoteCommandRunner Service...'
+Stop-Service RemoteCommandRunner 2>$null
 
 $sermanFolder = 'C:\serman'
 if ($(Test-Path -Path $sermanFolder) -eq $true)
 {
-    Write-Output 'Uninstall DeviceProxy...'
-    serman uninstall DeviceProxy 2>$null | Out-Null
-    
+    Write-Output 'Uninstall RemoteCommandRunner...'
+    serman uninstall RemoteCommandRunner 2>$null | Out-Null
+
     Write-Output 'Remove serman cache...'
     Remove-Item C:\serman -Recurse -Force 2>$null
 }
 
-Write-Output 'Remove old DeviceProxy installation...'
-Remove-Item -r 'C:\Program Files\dp-NetworkProxy-SureVision-Indoor-Windows-V1.6'
+Write-Output 'Remove old RemoteCommandRunner installation...'
+Remove-Item -r 'C:\Program Files\RemoteCommandRunner'
+Write-Output 'Install RemoteCommandRunner service'
+serman install $remoteCommandRunnerXml --overwrite
 
-Write-Output 'Install DeviceProxy service'
-serman install $deviceProxyXml ASP_ENV=$environment --overwrite
+Write-Output 'RemoteCommandRunner installation complete'
 
-# write out environment so the update routine can read it
-"{
-    `"server`": `"$server`"
- }" | Out-File -FilePath C:\ProgramData\DP\DeviceProxy\server.json
-
-
-Write-Output 'DeviceProxy installation complete'

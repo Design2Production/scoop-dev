@@ -1,11 +1,16 @@
-# DP New Installation for SureVision - Indoor - Single PC
+# DP New Remote Command Runner Installation for SureVision - Outdoor - Dual PC
 
 # Pre Installation
 Ensure the Ethernet connection to the switch (connected to the internet) is made prior to installation, otherwise the automatic network configuration will throw an exception and abort the installation.
 
-    1. Connect the longer Ethernet cable from the PCs to the swith to the left most port (when looking from the front of the PC)
+On Both PCs:
 
-# DeviceProxy Installation
+    1. Connect the longer Ethernet cable from the PCs to the swith to the left most port (when looking from the front of the PC)
+    2. Connect the short Ethernet cable between the PCs to the right most port (when looking from the front of the PC)
+
+# RemoteCommandRunner Installation
+
+***The Remote command runner should ONLY be installed on the "Second" PC in a dual PC setup.***
 
 1. Start Powershell as Administrator
 <pre>
@@ -15,9 +20,9 @@ Ensure the Ethernet connection to the switch (connected to the internet) is made
     4. Click on **Yes** when asked for permission
 </pre>
 
-2. Download the install script for a NEW installation
+2. Download the install script
 <pre>
-Invoke-WebRequest -Uri https://design2production.github.io/scoop-dev/NewInstallDeviceProxy.ps1 -OutFile NewInstallDeviceProxy.ps1
+Invoke-WebRequest -Uri https://design2production.github.io/scoop-dev/NewInstallRemoteCommandRunner.ps1 -OutFile NewInstallRemoteCommandRunner.ps1
 </pre>
 
 > If the installation script fails with:
@@ -32,16 +37,9 @@ Invoke-WebRequest -Uri https://design2production.github.io/scoop-dev/NewInstallD
 > Set-Executionpolicy remotesigned -scope currentuser -Force 
 > </pre>
 
-3. Run the install script using the ***Unique-Device-Id*** for the unit:
-
-<pre>.\NewInstallDeviceProxy.ps1 Production singlePC Unique-Device-Id DPEMS-V1_DBV3</pre>
-
-The arguments are as follows:
+3. Run the install script
 <pre>
-      Production = which server to use: Staging | Production
-        singlePc = InstallationType: singlePC|dualPC
-Unique-Device-Id = Surevision Unique Device Id for this unit
-   DPEMS-V1_DBV3 = DPEMS Hardware for Indoor Units
-        </pre>
+.\NewInstallRemoteCommandRunner.ps1 DPEMS-V2
+</pre>
 
 > Ensure there are no errors reported during installation - it can take a long time to install, particularly on machines with slow or intermittant internet

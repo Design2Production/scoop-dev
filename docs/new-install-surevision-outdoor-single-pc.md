@@ -1,9 +1,10 @@
-# DP New Installation for SureVision - Indoor - Single PC
+# DP New Installation for SureVision - Outdoor - Single PC
 
 # Pre Installation
 Ensure the Ethernet connection to the switch (connected to the internet) is made prior to installation, otherwise the automatic network configuration will throw an exception and abort the installation.
 
-    1. Connect the longer Ethernet cable from the PCs to the swith to the left most port (when looking from the front of the PC)
+1. Connect the longer Ethernet cable from the PC to the swith to the left most port (when looking from the front of the PC)
+2. Connect the short Ethernet cable between the PC and the DPEMS to the right most port (when looking from the front of the PC)
 
 # DeviceProxy Installation
 
@@ -34,14 +35,15 @@ Invoke-WebRequest -Uri https://design2production.github.io/scoop-dev/NewInstallD
 
 3. Run the install script using the ***Unique-Device-Id*** for the unit:
 
-<pre>.\NewInstallDeviceProxy.ps1 Production singlePC Unique-Device-Id DPEMS-V1_DBV3</pre>
+<pre>.\NewInstallDeviceProxy.ps1 Production new singlePC Unique-Device-Id DPEMS-V2 10.10.10.3</pre> 
 
 The arguments are as follows:
+
 <pre>
       Production = which server to use: Staging | Production
         singlePc = InstallationType: singlePC|dualPC
 Unique-Device-Id = Surevision Unique Device Id for this unit
-   DPEMS-V1_DBV3 = DPEMS Hardware for Indoor Units
-        </pre>
-
-> Ensure there are no errors reported during installation - it can take a long time to install, particularly on machines with slow or intermittant internet
+        DPEMS-V2 = DPEMS Hardware Outdoor Units: DPEMS-V2
+      10.10.10.3 = The Ip Address of the DPEMS-V2
+</pre>
+> Ensure there are no errors reported during installation - it can take a long time to install, particularly on machines with slow or intermittant internet***

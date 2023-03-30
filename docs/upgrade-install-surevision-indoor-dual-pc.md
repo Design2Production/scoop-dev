@@ -1,11 +1,23 @@
-# DP Upgrade Installation for SureVision - Indoor - Single PC
+# DP Upgrade Installation for SureVision - Indoor - Dual PC
 
 # Pre Installation
 Ensure the Ethernet connection to the switch (connected to the internet) is made prior to installation, otherwise the automatic network configuration will throw an exception and abort the installation.
 
+On Both PCs:
+
     1. Connect the longer Ethernet cable from the PCs to the swith to the left most port (when looking from the front of the PC)
+    2. Connect the short Ethernet cable between the PCs to the right most port (when looking from the front of the PC)
+
+# RemoteCommandRunner Installation
+
+***The Remote command runner should ONLY be installed on the "Second" PC in a dual PC setup.***
+
+If setting up a new PC B installtion follow [these](https://design2production.github.io/scoop-dev/new-rcr-install-surevision-indoor-pc.html) instructions.
+
+If upgrading an old PC B installation follow [these](https://design2production.github.io/scoop-dev/upgrade-rcr-install-surevision-indoor-pc.html) instructions:
 
 # DeviceProxy Installation
+
 1. Start Powershell as Administrator
 <pre>
     1. Press the **Windows** key
@@ -33,13 +45,14 @@ Invoke-WebRequest -Uri https://design2production.github.io/scoop-dev/UpgradeInst
 
 3. Run the install script:
 
-<pre>.\UpgradeInstallDeviceProxy.ps1 Production "C:\Program Files\dp-NetworkProxy-SureVision-Indoor-Windows-V1.6" singlePC</pre>
+<pre>.\UpgradeInstallDeviceProxy.ps1 Production "C:\Program Files\dp-NetworkProxy-SureVision-Indoor-Windows-V1.6" dualPC</pre>
 
 The arguments are as follows:
+
 <pre>
                                                       Production = which server to use: Staging | Production
 "C:\Program Files\dp-NetworkProxy-Surevision-Indoor-Windows-V1.6 = old installation folder
                                                         singlePc = InstallationType: singlePC|dualPC
 </pre>
 
-> Ensure there are no errors reported during installation - it can take a long time to install, particularly on machines with slow or intermittant internet
+> Ensure there are no errors reported during installation - it can take a long time to install, particularly on machines with slow or intermittant internet***
