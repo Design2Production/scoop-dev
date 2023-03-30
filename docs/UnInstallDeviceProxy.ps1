@@ -1,8 +1,6 @@
 #Requires -RunAsAdministrator
 Set-PSDebug -Trace 0
 
-$repo = 'scoop-dev'
-
 Function SerialDisableDPEMSWatchDog
 {
     # Disable the DPEMS watchdog using a network call so we don't get killed part way through the installation

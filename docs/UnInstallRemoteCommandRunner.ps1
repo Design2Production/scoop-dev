@@ -1,8 +1,6 @@
 #Requires -RunAsAdministrator
 Set-PSDebug -Trace 0
 
-$repo = 'scoop-dev'
-
 Write-Output 'Uninstalling RemoteCommandRunner...'
 
 if ( $psversiontable.psversion.major -lt 3 )
