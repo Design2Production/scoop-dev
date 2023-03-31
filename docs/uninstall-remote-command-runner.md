@@ -1,4 +1,4 @@
-# DP Uninstallation of Proxy
+# DP Uninstallation of Remote Command Runner
 
 1. Download the uninstall script
 <pre>

@@ -3,6 +3,18 @@ Set-PSDebug -Trace 0
 
 $repo = 'scoop-dev'
 
+if ($repo -eq 'scoop-dev')
+{
+    Write-Output 'THIS IS A DEVELOPMENT VERSION OF THE DEVICE PROXY INSTALLER'
+    Write-Output 'Are you sure you want to continue installation?'
+    $answer = Read-Host -Prompt 'Type YES to continue'
+    if ($answer -ne 'YES')
+    {
+        Write-Output 'Installation Aborted'
+        exit 1
+    }
+}
+
 Function SerialDisableDPEMSWatchDog
 {
     # Disable the DPEMS watchdog using a network call so we don't get killed part way through the installation

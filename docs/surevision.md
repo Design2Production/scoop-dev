@@ -1,8 +1,8 @@
-# DP Device Proxy Installation for SureVision
+# DP DEVELOPMENT Device Proxy Installation for SureVision
 
 DPs new Windows software management system is based on a system called "scoop". Once installed, the software will automatically check for and install any updates at 3am each day. An active internet connection is required for installation of the proxy via the guides below.
 
-## Installing the Device Proxy on a NEW PC
+## Installing the DEVELOPMENT Device Proxy on a NEW PC
 
 Please follow these guides when installing onto new or cleaned PCs that have no prior Device Proxy versions installed.
 
@@ -17,7 +17,7 @@ Please follow these guides when installing onto new or cleaned PCs that have no 
 
 [New Install - SureVision - Outdoor - Dual PC](https://design2production.github.io/scoop-dev/new-install-surevision-outdoor-dual-pc.html)
 
-## Upgrading the Device Proxy on a pre "scoop" PC
+## Upgrading the DEVELOPMENT Device Proxy on a pre "scoop" PC
 
 Previously the Device Proxy was updated manually during service calls. Please follow these guides when upgrading a PC with one of these old Device Proxy installations.
 

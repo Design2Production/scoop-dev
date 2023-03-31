@@ -1,4 +1,4 @@
-# DP Upgrade Remote Command Runner Installation for SureVision -Indoor - Dual PC
+# DP Upgrade DEVELOPMENT Remote Command Runner Installation for SureVision -Indoor - Dual PC
 
 # Pre Installation
 Ensure the Ethernet connection to the switch (connected to the internet) is made prior to installation, otherwise the automatic network configuration will throw an exception and abort the installation.
