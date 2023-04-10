@@ -384,6 +384,10 @@ catch
 #create .gitconfig file - to allow sync over slow internet connections
 '[http]
 postBuffer = 1048576000
+maxRequestBuffer = 1048576000
+[https]
+postBuffer = 1048576000
+maxRequestBuffer = 1048576000
 [core]
 packetGitLimit = 512m
 packedGitWindowSize = 512m

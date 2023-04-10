@@ -263,6 +263,9 @@ Remove-Item C:\Users\SureVision\Desktop\start.cmd -Force 2>$null
 Write-Output 'Remove old RunRemoteCommandRunner scehduled task...'
 Unregister-ScheduledTask -TaskName 'RunRemoteCommandRunner' -Confirm:$false
 
+Write-Output 'Remove old RunNetworkProxy scehduled task...'
+Unregister-ScheduledTask -TaskName 'RunNetworkProxy' -Confirm:$false
+
 Write-Output 'Stop the RemoveCommandRunner.exe process...'
 taskkill /IM RemoteCommandRunner.exe /F
 
@@ -286,6 +289,10 @@ catch
 #create .gitconfig file - to allow sync over slow internet connections
 '[http]
 postBuffer = 1048576000
+maxRequestBuffer = 1048576000
+[https]
+postBuffer = 1048576000
+maxRequestBuffer = 1048576000
 [core]
 packetGitLimit = 512m
 packedGitWindowSize = 512m
