@@ -68,8 +68,8 @@ Function NetworkDisableDPEMSWatchDog
     {
         # disable the watchdog - both network and serial
         # the proxy will reenable it once it runs
-        $setting = Get-Content -Raw -Path C:\ProgramData\DP\DeviceProxy\setting.json | ConvertFrom-Json
-        $deviceAddress = $setting.deviceAddress
+        #$setting = Get-Content -Raw -Path C:\ProgramData\DP\DeviceProxy\setting.json | ConvertFrom-Json
+        #$deviceAddress = $setting.deviceAddress
         $postCommand = "$deviceAddress/setWatchDog"
         Write-Output $postCommand
 
@@ -89,9 +89,6 @@ Function NetworkDisableDPEMSWatchDog
         Write-Output "Stop WatchDog Exception:$_.Exception.Message"
     }    
 }
-
-Write-Output 'Stop the DeviceProxy.exe process...'
-taskkill /IM DeviceProxy.exe /F
 
 Write-Output 'Downloading and installing DeviceProxy'
 
@@ -221,7 +218,7 @@ Switch ($hardware)
         {
             Write-Output 'Device Address'$deviceAddress
         }
-        if (!$secondPcIpAddress)
+        if ($installationType -eq 'dualPC' -and !$secondPcIpAddress)
         {
             Write-Output 'Second Pc Ip Address must be specified - eg: 10.1.10.101'
             exit
@@ -426,6 +423,9 @@ Remove-Item C:\Users\SureVision\Desktop\start.cmd -Force 2>$null
 Write-Output 'Remove old RunNetworkProxy scehduled task...'
 Unregister-ScheduledTask -TaskName 'RunNetworkProxy' -Confirm:$false
 
+Write-Output 'Stop the DeviceProxy.exe process...'
+taskkill /IM DeviceProxy.exe /F
+
 Write-Output 'Installing scoop...'
 $env:SCOOP = 'C:\scoop'
 [environment]::setEnvironmentVariable('SCOOP', $env:SCOOP, 'User')
@@ -530,7 +530,7 @@ if ($(Test-Path -Path $sermanFolder) -eq $true)
 }
 
 Write-Output 'Remove old DeviceProxy installation...'
-Remove-Item -r 'C:\Program Files\dp-NetworkProxy-SureVision-Indoor-Windows-V1.6'
+Remove-Item -r $oldInstallationFolder -Force 2>$null
 
 Write-Output 'Install DeviceProxy service'
 serman install $deviceProxyXml ASP_ENV=$environment --overwrite
