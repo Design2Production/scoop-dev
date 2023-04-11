@@ -1,5 +1,7 @@
 # DP DEVELOPMENT Device Proxy Installation for SureVision
 
+## WINDOWS DEVELOPMENT SERVER - DO NOT DEPLOY TO THIS IN PRODUCTION
+
 DPs new Windows software management system is based on a system called "scoop". Once installed, the software will automatically check for and install any updates at 3am each day. An active internet connection is required for installation of the proxy via the guides below.
 
 ## Installing the DEVELOPMENT Device Proxy on a NEW PC

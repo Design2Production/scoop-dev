@@ -82,7 +82,19 @@ Function NetworkDisableDPEMSWatchDog
             'Content-Type' = 'application/json'
         }
    
-        Invoke-RestMethod -Uri "$postCommand" -Method 'Post' -Body $body -Headers $header | ConvertTo-Html | Out-Null
+        for ($i = 0; $i -lt 3; $i++)
+        {
+            $response = Invoke-WebRequest -Uri "$postCommand" -Method 'Post' -Body $body -Headers $header
+            if ($response.StatusCode -eq 200)
+            {
+                Write-Output 'Stop WatchDog Successful'
+                break;
+            }
+            else
+            {
+                Write-Output "Stop WatchDog Failed:$($response.StatusCode)"
+            }
+        }
     }
     catch
     {
@@ -401,6 +413,13 @@ windowMemory = 2047m
 scoop update
 
 $installedApps = $(scoop list)
+
+$aria2Installed = $($installedApps | Select-String -Pattern 'aria2' -CaseSensitive -SimpleMatch)
+if (!$aria2Installed)
+{
+    scoop install aria2
+}
+
 $gitInstalled = $($installedApps | Select-String -Pattern 'git' -CaseSensitive -SimpleMatch)
 if (!$gitInstalled)
 {

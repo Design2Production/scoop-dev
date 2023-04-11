@@ -290,6 +290,13 @@ windowMemory = 2047m
 scoop update
 
 $installedApps = $(scoop list)
+
+$aria2Installed = $($installedApps | Select-String -Pattern 'aria2' -CaseSensitive -SimpleMatch)
+if (!$aria2Installed)
+{
+    scoop install aria2
+}
+
 $gitInstalled = $($installedApps | Select-String -Pattern 'git' -CaseSensitive -SimpleMatch)
 if (!$gitInstalled)
 {

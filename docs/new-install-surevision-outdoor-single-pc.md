@@ -1,5 +1,7 @@
 # DP New DEVELOPMENT Installation for SureVision - Outdoor - Single PC
 
+## WINDOWS DEVELOPMENT SERVER - DO NOT DEPLOY TO THIS IN PRODUCTION
+
 # Pre Installation
 Ensure the Ethernet connection to the switch (connected to the internet) is made prior to installation, otherwise the automatic network configuration will throw an exception and abort the installation.
 

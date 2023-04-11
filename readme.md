@@ -1,6 +1,8 @@
 # We are using serman to run DeviceProxy as a service
 https://github.com/kflu/serman
 
+## WINDOWS DEVELOPMENT SERVER - DO NOT DEPLOY TO THIS IN PRODUCTION
+
 # Install the service
 We pass the configuration into the install process using ASP_ENV as below
 <pre>

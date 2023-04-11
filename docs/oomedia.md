@@ -1,5 +1,7 @@
 # DP Windows Installation for Oooh Media
 
+## WINDOWS DEVELOPMENT SERVER - DO NOT DEPLOY TO THIS IN PRODUCTION
+
 [DeviceProxy Installation](#deviceproxy-installation)
 
 [DeviceProxy Uninstallation](#deviceproxy-uninstallation)
