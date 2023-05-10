@@ -25,7 +25,7 @@ Function SerialDisableDPEMSWatchDog
     
     foreach ($serialPortName in $serialPortNames)
     {
-        for ($i = 0; $i -lt 3; $i++)
+        for ($i = 0; $i -lt 10; $i++)
         {
             try
             {
@@ -57,12 +57,18 @@ Function SerialDisableDPEMSWatchDog
             break;
         }
     }
+    if ($watchDogDisabled -ne $true)
+    {
+        Write-Output 'Stop WatchDog Failed'
+        exit 1
+    }
 }
 
 Function NetworkDisableDPEMSWatchDog
 {
     # Disable the DPEMS watchdog using a network call so we don't get killed part way through the installation
     # The Proxy will enable the watchdog when it starts running
+    $watchDogDisabled = $false
 
     try
     {
@@ -82,12 +88,13 @@ Function NetworkDisableDPEMSWatchDog
             'Content-Type' = 'application/json'
         }
    
-        for ($i = 0; $i -lt 3; $i++)
+        for ($i = 0; $i -lt 10; $i++)
         {
             $response = Invoke-WebRequest -Uri "$postCommand" -Method 'Post' -Body $body -Headers $header
             if ($response.StatusCode -eq 200)
             {
                 Write-Output 'Stop WatchDog Successful'
+                $watchDogDisabled = $true
                 break;
             }
             else
@@ -99,6 +106,11 @@ Function NetworkDisableDPEMSWatchDog
     catch
     {
         Write-Output "Stop WatchDog Exception:$_.Exception.Message"
+    }    
+    if ($watchDogDisabled -ne $true)
+    {
+        Write-Output 'Stop WatchDog Failed'
+        exit 1
     }    
 }
 
