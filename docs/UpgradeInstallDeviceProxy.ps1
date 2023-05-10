@@ -82,7 +82,19 @@ Function NetworkDisableDPEMSWatchDog
             'Content-Type' = 'application/json'
         }
    
-        Invoke-RestMethod -Uri "$postCommand" -Method 'Post' -Body $body -Headers $header | ConvertTo-Html | Out-Null
+        for ($i = 0; $i -lt 3; $i++)
+        {
+            $response = Invoke-WebRequest -Uri "$postCommand" -Method 'Post' -Body $body -Headers $header
+            if ($response.StatusCode -eq 200)
+            {
+                Write-Output 'Stop WatchDog Successful'
+                break;
+            }
+            else
+            {
+                Write-Output "Stop WatchDog Failed:$($response.StatusCode)"
+            }
+        }
     }
     catch
     {
@@ -189,22 +201,18 @@ Switch ($hardware)
 {
     'DPEMS-V1'
     {
-        SerialDisableDPEMSWatchDog
         $secondPcIpAddress = '192.168.64.2'
     }
     'DPEMS-V1_DBV2'
     {
-        SerialDisableDPEMSWatchDog
         $secondPcIpAddress = '192.168.64.2'
     }
     'DPEMS-V1_DBV3'
     {
-        SerialDisableDPEMSWatchDog
         $secondPcIpAddress = '192.168.64.2'
     }
     'DPEMS-V1_FANEXT' 
     {
-        SerialDisableDPEMSWatchDog
         $secondPcIpAddress = '192.168.64.2'
     }
     'DPEMS-V2'
@@ -223,7 +231,6 @@ Switch ($hardware)
             Write-Output 'Second Pc Ip Address must be specified - eg: 10.1.10.101'
             exit
         }
-        NetworkDisableDPEMSWatchDog
     }
     default
     {
@@ -426,6 +433,35 @@ Unregister-ScheduledTask -TaskName 'RunNetworkProxy' -Confirm:$false
 Write-Output 'Stop the DeviceProxy.exe process...'
 taskkill /IM DeviceProxy.exe /F
 
+Switch ($hardware)
+{
+    'DPEMS-V1'
+    {
+        SerialDisableDPEMSWatchDog
+    }
+    'DPEMS-V1_DBV2'
+    {
+        SerialDisableDPEMSWatchDog
+    }
+    'DPEMS-V1_DBV3'
+    {
+        SerialDisableDPEMSWatchDog
+    }
+    'DPEMS-V1_FANEXT' 
+    {
+        SerialDisableDPEMSWatchDog
+    }
+    'DPEMS-V2'
+    {
+        NetworkDisableDPEMSWatchDog
+    }
+    default
+    {
+        Write-Output 'hardware not found in appsetting.json'
+        exit 1
+    }
+}
+
 Write-Output 'Installing scoop...'
 $env:SCOOP = 'C:\scoop'
 [environment]::setEnvironmentVariable('SCOOP', $env:SCOOP, 'User')
@@ -462,6 +498,13 @@ windowMemory = 2047m
 scoop update
 
 $installedApps = $(scoop list)
+
+$aria2Installed = $($installedApps | Select-String -Pattern 'aria2' -CaseSensitive -SimpleMatch)
+if (!$aria2Installed)
+{
+    scoop install aria2
+}
+
 $gitInstalled = $($installedApps | Select-String -Pattern 'git' -CaseSensitive -SimpleMatch)
 if (!$gitInstalled)
 {
